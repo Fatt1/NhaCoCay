@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
+import { createPortal } from "react-dom"
 import { toggleLikePost, getPostComments, addComment } from "@/services"
 import { useAuthStore } from "@/stores"
 import type { DiaryPost, PostComment } from "@/types"
@@ -82,6 +83,46 @@ export const PostCard: React.FC<PostCardProps> = ({
     userId?: string
   } | null>(null)
   const [replyInput, setReplyInput] = useState("")
+
+  // Danh sách hình ảnh bài viết (loại bỏ link rỗng)
+  const imagesList = useMemo(() => {
+    return post.images && post.images.length > 0
+      ? post.images.filter((img) => img && img.trim() !== "")
+      : post.coverImage && post.coverImage.trim() !== ""
+      ? [post.coverImage]
+      : []
+  }, [post.images, post.coverImage])
+
+  // Trạng thái phóng to ảnh (Lightbox Preview)
+  const [previewImageIndex, setPreviewImageIndex] = useState<number | null>(null)
+
+  // Điều khiển bằng phím Escape và Mũi tên trái / phải
+  useEffect(() => {
+    if (previewImageIndex === null) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setPreviewImageIndex(null)
+      } else if (e.key === "ArrowLeft") {
+        setPreviewImageIndex((prev) =>
+          prev !== null ? (prev - 1 + imagesList.length) % imagesList.length : 0
+        )
+      } else if (e.key === "ArrowRight") {
+        setPreviewImageIndex((prev) =>
+          prev !== null ? (prev + 1) % imagesList.length : 0
+        )
+      }
+    }
+
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [previewImageIndex, imagesList.length])
 
   // Quản lý trạng thái hiển thị bình luận con (ẩn mặc định, chỉ mở khi người dùng bấm vào)
   const [expandedReplies, setExpandedReplies] = useState<Record<string, boolean>>({})
@@ -235,18 +276,13 @@ export const PostCard: React.FC<PostCardProps> = ({
     }
   }
 
-  const imagesList =
-    post.images && post.images.length > 0
-      ? post.images.filter((img) => img && img.trim() !== "")
-      : post.coverImage && post.coverImage.trim() !== ""
-      ? [post.coverImage]
-      : []
 
   const totalCommentsCount =
     post.commentsCount > comments.length ? post.commentsCount : comments.length
 
   return (
-    <Card
+    <>
+      <Card
       className={`bg-surface-container-lowest rounded-3xl p-6 sm:p-7 shadow-sm border border-outline-variant/30 flex flex-col gap-4 ${className}`}
     >
       <CardContent className="p-0 flex flex-col gap-4">
@@ -338,72 +374,168 @@ export const PostCard: React.FC<PostCardProps> = ({
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
-        {/* Post Images based on count */}
-        {imagesList.length >= 4 && (
-          <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden max-h-[380px] sm:max-h-[440px] select-none">
-            {imagesList.slice(0, 4).map((url, i) => (
-              <div key={i} className="relative aspect-square">
+        {/* Post Images Layout (Hỗ trợ hiển thị tối ưu cho 1, 2, 3, 4, 5+ ảnh) */}
+        {imagesList.length >= 5 && (
+          <div className="flex flex-col gap-2 rounded-2xl overflow-hidden select-none">
+            {/* Hàng 1: 2 ảnh lớn (50% - 50%) */}
+            <div className="grid grid-cols-2 gap-2 h-[200px] sm:h-[260px]">
+              {[0, 1].map((idx) => (
+                <div
+                  key={idx}
+                  className="relative h-full overflow-hidden cursor-pointer group bg-neutral-100 rounded-xl"
+                  onClick={() => setPreviewImageIndex(idx)}
+                >
+                  <img
+                    src={imagesList[idx]}
+                    alt={`Ảnh minh họa ${idx + 1}`}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <span className="material-symbols-outlined text-white text-[28px] drop-shadow-md">
+                      zoom_in
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Hàng 2: 3 ảnh bên dưới (33.3% - 33.3% - 33.3%) */}
+            <div className="grid grid-cols-3 gap-2 h-[130px] sm:h-[180px]">
+              {[2, 3, 4].map((idx) => {
+                const isLastVisible = idx === 4
+                const remainingCount = imagesList.length - 5
+                return (
+                  <div
+                    key={idx}
+                    className="relative h-full overflow-hidden cursor-pointer group bg-neutral-100 rounded-xl"
+                    onClick={() => setPreviewImageIndex(idx)}
+                  >
+                    <img
+                      src={imagesList[idx]}
+                      alt={`Ảnh minh họa ${idx + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+
+                    {/* Hiển thị badge +N nếu tổng số ảnh > 5 như giao diện mẫu */}
+                    {isLastVisible && remainingCount > 0 ? (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-2xl sm:text-3xl tracking-wide select-none group-hover:bg-black/75 transition-colors">
+                        +{remainingCount}
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <span className="material-symbols-outlined text-white text-[24px] drop-shadow-md">
+                          zoom_in
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {imagesList.length === 4 && (
+          <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden select-none">
+            {imagesList.map((url, idx) => (
+              <div
+                key={idx}
+                className="relative aspect-square sm:aspect-[4/3] overflow-hidden cursor-pointer group bg-neutral-100 rounded-xl"
+                onClick={() => setPreviewImageIndex(idx)}
+              >
                 <img
                   src={url}
-                  alt={`Ảnh minh họa ${i + 1}`}
-                  className="w-full h-full object-cover rounded-xl"
+                  alt={`Ảnh minh họa ${idx + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                {i === 3 && imagesList.length > 4 && (
-                  <div className="absolute inset-0 bg-black/60 rounded-xl flex items-center justify-center text-white font-bold text-lg">
-                    +{imagesList.length - 4}
-                  </div>
-                )}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span className="material-symbols-outlined text-white text-[26px] drop-shadow-md">
+                    zoom_in
+                  </span>
+                </div>
               </div>
             ))}
           </div>
         )}
 
         {imagesList.length === 3 && (
-          <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden max-h-[380px] sm:max-h-[440px] select-none">
-            <div className="h-full">
+          <div className="flex flex-col gap-2 rounded-2xl overflow-hidden select-none">
+            <div
+              className="h-[220px] sm:h-[280px] w-full overflow-hidden cursor-pointer group relative bg-neutral-100 rounded-xl"
+              onClick={() => setPreviewImageIndex(0)}
+            >
               <img
                 src={imagesList[0]}
                 alt="Ảnh minh họa 1"
-                className="w-full h-full object-cover rounded-xl"
+                className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
               />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <span className="material-symbols-outlined text-white text-[28px] drop-shadow-md">
+                  zoom_in
+                </span>
+              </div>
             </div>
-            <div className="grid grid-rows-2 gap-2 h-full">
-              <img
-                src={imagesList[1]}
-                alt="Ảnh minh họa 2"
-                className="w-full h-full object-cover rounded-xl"
-              />
-              <img
-                src={imagesList[2]}
-                alt="Ảnh minh họa 3"
-                className="w-full h-full object-cover rounded-xl"
-              />
+            <div className="grid grid-cols-2 gap-2 h-[150px] sm:h-[190px]">
+              {[1, 2].map((idx) => (
+                <div
+                  key={idx}
+                  className="relative h-full overflow-hidden cursor-pointer group bg-neutral-100 rounded-xl"
+                  onClick={() => setPreviewImageIndex(idx)}
+                >
+                  <img
+                    src={imagesList[idx]}
+                    alt={`Ảnh minh họa ${idx + 1}`}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <span className="material-symbols-outlined text-white text-[24px] drop-shadow-md">
+                      zoom_in
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
 
         {imagesList.length === 2 && (
-          <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden max-h-80 select-none">
-            <img
-              src={imagesList[0]}
-              alt="Ảnh 1"
-              className="w-full h-full object-cover rounded-xl"
-            />
-            <img
-              src={imagesList[1]}
-              alt="Ảnh 2"
-              className="w-full h-full object-cover rounded-xl"
-            />
+          <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden max-h-[340px] sm:max-h-[400px] select-none">
+            {imagesList.map((url, idx) => (
+              <div
+                key={idx}
+                className="relative aspect-[4/3] sm:aspect-square overflow-hidden cursor-pointer group bg-neutral-100 rounded-xl"
+                onClick={() => setPreviewImageIndex(idx)}
+              >
+                <img
+                  src={url}
+                  alt={`Ảnh ${idx + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span className="material-symbols-outlined text-white text-[26px] drop-shadow-md">
+                    zoom_in
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
         {imagesList.length === 1 && (
-          <div className="rounded-2xl overflow-hidden max-h-96 select-none">
+          <div
+            className="rounded-2xl overflow-hidden max-h-[480px] sm:max-h-[540px] select-none cursor-pointer group relative bg-neutral-100"
+            onClick={() => setPreviewImageIndex(0)}
+          >
             <img
               src={imagesList[0]}
               alt={post.title}
-              className="w-full h-full object-cover rounded-xl"
+              className="w-full h-full max-h-[480px] sm:max-h-[540px] object-cover rounded-2xl group-hover:scale-[1.01] transition-transform duration-300"
             />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <span className="material-symbols-outlined text-white text-[32px] drop-shadow-md">
+                zoom_in
+              </span>
+            </div>
           </div>
         )}
 
@@ -746,6 +878,121 @@ export const PostCard: React.FC<PostCardProps> = ({
           </div>
         )}
       </CardContent>
-    </Card>
+      </Card>
+
+      {/* Lightbox / Xem ảnh phóng to toàn màn hình & Chuyển qua lại các ảnh */}
+      {previewImageIndex !== null &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[999] bg-black/92 backdrop-blur-md flex flex-col justify-between select-none animate-in fade-in duration-200"
+            onClick={() => setPreviewImageIndex(null)}
+          >
+            {/* Thanh điều khiển trên cùng */}
+            <div
+              className="flex items-center justify-between px-4 sm:px-8 py-4 text-white z-20"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3">
+                <span className="bg-white/15 px-3.5 py-1 rounded-full text-xs font-semibold backdrop-blur-xs tracking-wider">
+                  {previewImageIndex + 1} / {imagesList.length}
+                </span>
+                <span className="text-xs text-white/70 hidden sm:inline">
+                  Dùng phím mũi tên ← → để chuyển ảnh, ESC để đóng
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setPreviewImageIndex(null)}
+                className="size-10 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors cursor-pointer"
+                title="Đóng xem ảnh (ESC)"
+              >
+                <span className="material-symbols-outlined text-[24px]">close</span>
+              </button>
+            </div>
+
+            {/* Vùng hiển thị ảnh chính */}
+            <div
+              className="relative flex-1 flex items-center justify-center px-4 sm:px-16 py-2 overflow-hidden"
+              onClick={() => setPreviewImageIndex(null)}
+            >
+              {/* Nút Xem ảnh trước (Previous) */}
+              {imagesList.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setPreviewImageIndex(
+                      (prev) => (prev! - 1 + imagesList.length) % imagesList.length
+                    )
+                  }}
+                  className="absolute left-3 sm:left-6 z-20 size-11 sm:size-14 rounded-full bg-black/50 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-sm transition-all hover:scale-105 cursor-pointer shadow-lg border border-white/10"
+                  title="Ảnh trước (←)"
+                >
+                  <span className="material-symbols-outlined text-[28px] sm:text-[34px]">
+                    chevron_left
+                  </span>
+                </button>
+              )}
+
+              {/* Ảnh to rõ nét */}
+              <img
+                src={imagesList[previewImageIndex]}
+                alt={`Xem ảnh ${previewImageIndex + 1}`}
+                className="max-h-[72vh] sm:max-h-[80vh] max-w-[92vw] sm:max-w-[85vw] object-contain rounded-xl shadow-2xl transition-all duration-200 select-none"
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              {/* Nút Xem ảnh kế tiếp (Next) */}
+              {imagesList.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setPreviewImageIndex((prev) => (prev! + 1) % imagesList.length)
+                  }}
+                  className="absolute right-3 sm:right-6 z-20 size-11 sm:size-14 rounded-full bg-black/50 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-sm transition-all hover:scale-105 cursor-pointer shadow-lg border border-white/10"
+                  title="Ảnh tiếp theo (→)"
+                >
+                  <span className="material-symbols-outlined text-[28px] sm:text-[34px]">
+                    chevron_right
+                  </span>
+                </button>
+              )}
+            </div>
+
+            {/* Dải hình ảnh thu nhỏ ở chân trang (Thumbnails strip) */}
+            {imagesList.length > 1 && (
+              <div
+                className="px-4 py-3 z-20 flex items-center justify-center gap-2 overflow-x-auto max-w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center gap-2 p-1.5 bg-black/50 backdrop-blur-sm rounded-2xl max-w-full overflow-x-auto border border-white/10">
+                  {imagesList.map((url, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setPreviewImageIndex(idx)}
+                      className={`size-12 sm:size-14 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                        previewImageIndex === idx
+                          ? "border-emerald-400 scale-105 opacity-100 shadow-md ring-2 ring-emerald-400/40"
+                          : "border-transparent opacity-50 hover:opacity-85 hover:scale-100"
+                      }`}
+                    >
+                      <img
+                        src={url}
+                        alt={`Thumbnail ${idx + 1}`}
+                        className="size-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>,
+          document.body
+        )}
+    </>
   )
 }
