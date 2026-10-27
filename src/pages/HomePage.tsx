@@ -78,8 +78,8 @@ export const HomePage: React.FC<HomePageProps> = ({
         onGoToForum={onGoToForum}
       />
 
-      {/* 6. Testimonials & Community Reviews */}
-      <TestimonialsSection />
+      {/* 6. Testimonials & Community Reviews
+      <TestimonialsSection /> */}
     </div>
   )
 }
