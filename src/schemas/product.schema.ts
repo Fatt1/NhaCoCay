@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const kitComponentSchema = z.object({
   title: z.string().trim().min(1, "Tiêu đề thành phần không được để trống"),
-  description: z.string().trim().min(1, "Mô tả thành phần không được để trống"),
+  description: z.string().trim().default("").optional(),
 })
 
 export const specificationItemSchema = z.object({

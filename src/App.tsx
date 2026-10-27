@@ -14,6 +14,8 @@ import {
   AdminPage,
 } from "@/pages"
 import { ToastContainer, type ToastMessage } from "@/components/common"
+import { useAuthStore } from "@/stores"
+import { AuthModal } from "@/components/auth/AuthModal"
 import type { DiaryPost } from "@/types"
 
 type AppView =
@@ -30,6 +32,7 @@ type AppView =
   | "about"
 
 function App() {
+  const { user } = useAuthStore()
   const [currentView, setCurrentView] = useState<AppView>("home")
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
   const [selectedDiaryId, setSelectedDiaryId] = useState<string | null>(null)
@@ -159,6 +162,11 @@ function App() {
   }
 
   const handleNavigateAdmin = () => {
+    if (!user || user.role !== "admin") {
+      addToast("Chỉ tài khoản Quản Trị Viên mới có quyền truy cập trang Admin!", "lock")
+      setIsAuthModalOpen(true)
+      return
+    }
     setSelectedProductId(null)
     setSelectedDiaryId(null)
     setSelectedOrderId(null)
@@ -256,6 +264,53 @@ function App() {
       : currentView
 
   if (currentView === "admin") {
+    if (!user || user.role !== "admin") {
+      return (
+        <div className="min-h-screen bg-surface flex items-center justify-center p-6 selection:bg-secondary-container">
+          <div className="max-w-md w-full bg-surface-container-lowest rounded-3xl p-8 sm:p-10 border border-outline-variant/30 shadow-xl text-center space-y-6">
+            <div className="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto shadow-xs ring-8 ring-rose-50/50">
+              <span className="material-symbols-outlined text-[34px]">admin_panel_settings</span>
+            </div>
+            <div className="space-y-2">
+              <span className="text-[11px] uppercase tracking-wider font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full">
+                Khu vực hạn chế
+              </span>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-on-surface tracking-tight pt-1">
+                Yêu Cầu Quyền Quản Trị
+              </h2>
+              <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed font-body">
+                {!user
+                  ? "Trang quản trị chỉ dành riêng cho Quản Trị Viên (Admin) của Nhà Có Cây. Vui lòng đăng nhập bằng tài khoản Admin để tiếp tục."
+                  : `Tài khoản (${user.email}) hiện không có quyền Quản Trị Viên (Admin). Vui lòng đăng nhập bằng tài khoản Quản Trị Viên được phân quyền.`}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => handleNavigateTab("home")}
+                className="w-full py-2.5 px-4 rounded-xl border border-outline-variant/40 text-xs sm:text-sm font-semibold text-on-surface hover:bg-surface-container-low transition-colors cursor-pointer"
+              >
+                Về Trang Chủ
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAuthModalOpen(true)}
+                className="w-full py-2.5 px-4 rounded-xl bg-primary text-on-primary text-xs sm:text-sm font-bold hover:bg-primary-container transition-colors shadow-sm cursor-pointer"
+              >
+                {!user ? "Đăng Nhập Admin" : "Đổi Tài Khoản"}
+              </button>
+            </div>
+          </div>
+          <AuthModal
+            isOpen={isAuthModalOpen}
+            onClose={() => setIsAuthModalOpen(false)}
+            onSuccess={(msg) => addToast(msg, "eco")}
+          />
+          <ToastContainer toasts={toasts} onRemove={removeToast} />
+        </div>
+      )
+    }
+
     return (
       <>
         <AdminPage

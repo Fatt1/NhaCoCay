@@ -427,9 +427,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <h4 className="font-bold text-sm text-on-surface leading-tight">
                       {item.title}
                     </h4>
-                    <p className="text-xs text-on-surface-variant leading-relaxed">
-                      {item.description}
-                    </p>
+                    {item.description && (
+                      <p className="text-xs text-on-surface-variant leading-relaxed">
+                        {item.description}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

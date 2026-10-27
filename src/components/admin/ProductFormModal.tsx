@@ -214,7 +214,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
     if (!newCompTitle.trim()) return
     setKitComponents((prev) => [
       ...prev,
-      { title: newCompTitle.trim(), description: newCompDesc.trim() || "Thành phần chuẩn trong bộ kit" },
+      { title: newCompTitle.trim(), description: newCompDesc.trim() },
     ])
     setNewCompTitle("")
     setNewCompDesc("")
@@ -224,7 +224,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
   const handleStartEditComponent = (index: number) => {
     setEditingCompIndex(index)
     setEditCompTitle(kitComponents[index].title)
-    setEditCompDesc(kitComponents[index].description)
+    setEditCompDesc(kitComponents[index].description || "")
   }
 
   const handleSaveEditComponent = () => {
@@ -235,7 +235,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
         idx === editingCompIndex
           ? {
               title: editCompTitle.trim(),
-              description: editCompDesc.trim() || item.description,
+              description: editCompDesc.trim(),
             }
           : item
       )
@@ -622,7 +622,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                           type="text"
                           value={newCompDesc}
                           onChange={(e) => setNewCompDesc(e.target.value)}
-                          placeholder="Mô tả phụ kiện (ví dụ: 1 bình tưới vòi sen mini 250ml)"
+                          placeholder="Mô tả phụ kiện (tùy chọn, ví dụ: 1 bình tưới vòi sen mini 250ml)"
                           className="rounded-lg text-xs bg-background h-9 border-border sm:w-2/3"
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
@@ -701,7 +701,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                                 type="text"
                                 value={editCompDesc}
                                 onChange={(e) => setEditCompDesc(e.target.value)}
-                                placeholder="Mô tả chi tiết thành phần"
+                                placeholder="Mô tả chi tiết thành phần (tùy chọn)"
                                 className="rounded-lg text-xs bg-background h-9 border-border sm:w-2/3"
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter") {
@@ -751,9 +751,15 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                               <p className="text-xs font-bold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
                                 {comp.title}
                               </p>
-                              <p className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
-                                {comp.description}
-                              </p>
+                              {comp.description ? (
+                                <p className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
+                                  {comp.description}
+                                </p>
+                              ) : (
+                                <p className="text-[11px] text-muted-foreground/50 italic mt-0.5">
+                                  (Không có mô tả chi tiết)
+                                </p>
+                              )}
                             </div>
                           </div>
                           <div className="flex items-center gap-1 shrink-0">

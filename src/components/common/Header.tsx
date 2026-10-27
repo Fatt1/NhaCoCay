@@ -202,7 +202,14 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="w-56 bg-surface rounded-2xl shadow-xl border border-outline-variant/30 py-2 overflow-hidden text-left">
                     {/* User preview header */}
                     <div className="px-4 py-2.5 border-b border-outline-variant/15 bg-surface-container-low/40">
-                      <p className="font-bold text-xs text-on-surface truncate">{displayName}</p>
+                      <div className="flex items-center justify-between gap-1">
+                        <p className="font-bold text-xs text-on-surface truncate">{displayName}</p>
+                        {user.role === "admin" && (
+                          <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-full shrink-0">
+                            Admin
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[11px] text-on-surface-variant truncate mt-0.5">
                         {user.email}
                       </p>
@@ -226,23 +233,25 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className="font-semibold">Lịch Sử Đơn Hàng</span>
                     </button>
 
-                    {/* Option: Quản trị Admin */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (onNavigateAdmin) {
-                          onNavigateAdmin()
-                        } else {
-                          window.location.hash = "#/admin"
-                        }
-                      }}
-                      className="w-full px-4 py-2.5 flex items-center gap-2.5 text-xs text-on-surface hover:text-[#193a2c] hover:bg-emerald-50 transition-colors cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-[18px] text-emerald-800">
-                        admin_panel_settings
-                      </span>
-                      <span className="font-semibold">Trang Quản Trị (Admin)</span>
-                    </button>
+                    {/* Option: Quản trị Admin (Chỉ hiển thị cho tài khoản có quyền Admin) */}
+                    {user.role === "admin" && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (onNavigateAdmin) {
+                            onNavigateAdmin()
+                          } else {
+                            window.location.hash = "#/admin"
+                          }
+                        }}
+                        className="w-full px-4 py-2.5 flex items-center gap-2.5 text-xs text-on-surface hover:text-[#193a2c] hover:bg-emerald-50 transition-colors cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[18px] text-emerald-800">
+                          admin_panel_settings
+                        </span>
+                        <span className="font-semibold">Trang Quản Trị (Admin)</span>
+                      </button>
+                    )}
 
                     <div className="my-1 border-t border-outline-variant/15" />
 
