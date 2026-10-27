@@ -100,6 +100,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     parentId?: string | null
     isReply?: boolean
   } | null>(null)
+  const [showDeletePostDialog, setShowDeletePostDialog] = useState(false)
   const [comments, setComments] = useState<PostComment[]>([])
   const [loadingComments, setLoadingComments] = useState(false)
   const [showComments, setShowComments] = useState(showCommentsByDefault)
@@ -510,6 +511,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                 (user
                   ? post.userId === user.uid ||
                   post.authorName === user.fullName ||
+                  user.role === "admin" ||
                   (user.email && post.authorName.toLowerCase().includes(user.email.split("@")[0].toLowerCase()))
                   : false)
 
@@ -534,11 +536,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => {
-                          if (window.confirm(`Bạn có chắc chắn muốn xóa bài viết "${post.title}"?`)) {
-                            onDeletePost(post.id)
-                          }
-                        }}
+                        onClick={() => setShowDeletePostDialog(true)}
                         className="h-8 px-3 rounded-full text-xs font-semibold text-neutral-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 border-neutral-200/80 gap-1.5 cursor-pointer transition-colors shadow-none"
                         title="Xóa bài viết"
                       >
@@ -1447,6 +1445,41 @@ export const PostCard: React.FC<PostCardProps> = ({
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmDeleteComment}
+              className="bg-rose-600 hover:bg-rose-700 text-white"
+            >
+              Xác nhận xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      {/* Shadcn AlertDialog Xác nhận xóa bài viết */}
+      <AlertDialog
+        open={showDeletePostDialog}
+        onOpenChange={setShowDeletePostDialog}
+      >
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-rose-600">
+              <span className="material-symbols-outlined text-2xl">warning</span>
+              Xác nhận xóa bài viết
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn xóa bài viết{" "}
+              <span className="font-semibold text-on-surface">
+                &ldquo;{post.title}&rdquo;
+              </span>{" "}
+              không? Toàn bộ nội dung, hình ảnh và các bình luận của bài viết này sẽ bị xóa và hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowDeletePostDialog(false)}>
+              Hủy bỏ
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowDeletePostDialog(false)
+                onDeletePost?.(post.id)
+              }}
               className="bg-rose-600 hover:bg-rose-700 text-white"
             >
               Xác nhận xóa

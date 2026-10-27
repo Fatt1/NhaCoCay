@@ -46,7 +46,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* 1. Hero Section */}
       <HeroSection
         onExploreKits={onGoToKits || (() => scrollToSection("shop-section"))}
-        onJoinForum={() => scrollToSection("community-section")}
+        onJoinForum={onGoToForum}
         onNotify={onNotify}
       />
 

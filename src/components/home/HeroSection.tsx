@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { navigateTo } from "@/lib/navigation"
 import hinh1 from "@/assets/hinh1.jpg"
 import hinh2 from "@/assets/hinh2.jpg"
 import hinh3 from "@/assets/hinh3.jpg"
@@ -21,8 +22,8 @@ const HERO_IMAGES = [
 ]
 
 interface HeroSectionProps {
-  onExploreKits: () => void
-  onJoinForum: () => void
+  onExploreKits?: () => void
+  onJoinForum?: () => void
   onNotify?: (message: string, icon?: string) => void
 }
 
@@ -84,7 +85,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 w-full sm:w-auto">
               <Button
-                onClick={onExploreKits}
+                onClick={() => {
+                  if (onExploreKits) {
+                    onExploreKits()
+                  } else {
+                    navigateTo("/kits")
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                }}
                 className="w-full sm:w-auto px-6 sm:px-7 py-3.5 sm:py-6 rounded-full bg-primary text-on-primary font-semibold text-xs sm:text-sm shadow-xl shadow-primary/20 hover:bg-primary-container transition-all flex items-center justify-center gap-2 cursor-pointer h-auto"
               >
                 <span>Khám phá Kit Trồng Cây</span>
@@ -92,7 +100,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </Button>
               <Button
                 variant="outline"
-                onClick={onJoinForum}
+                onClick={() => {
+                  if (onJoinForum) {
+                    onJoinForum()
+                  } else {
+                    navigateTo("/forum")
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                }}
                 className="w-full sm:w-auto px-6 py-3.5 sm:py-6 rounded-full bg-secondary-container/60 text-primary border border-primary/20 font-semibold text-xs sm:text-sm hover:bg-secondary-container transition-all flex items-center justify-center gap-2 cursor-pointer h-auto"
               >
                 <span className="material-symbols-outlined text-[18px] sm:text-[20px]">forum</span>
