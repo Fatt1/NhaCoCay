@@ -1,7 +1,6 @@
-import React, { useState } from "react"
+import React from "react"
 import { useCartStore, useAuthStore } from "@/stores"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 
@@ -22,32 +21,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     items,
     updateQuantity,
     removeItem,
-    voucherCode,
-    discountPercent,
-    applyVoucher,
     getSubtotal,
     getTotal,
   } = useCartStore()
 
   const { user } = useAuthStore()
-  const [voucherInput, setVoucherInput] = useState("")
 
   if (!isOpen) return null
 
   const formatCurrency = (val: number) => {
     return val.toLocaleString("vi-VN") + "₫"
-  }
-
-  const handleApplyVoucher = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!voucherInput.trim()) return
-
-    const success = applyVoucher(voucherInput)
-    if (success) {
-      onNotify?.("Đã áp dụng mã giảm giá 10% (MAMXANH10) thành công!", "local_offer")
-    } else {
-      onNotify?.("Mã giảm giá không hợp lệ. Thử mã: MAMXANH10", "error")
-    }
   }
 
   const handleCheckout = () => {
@@ -66,7 +49,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const subtotal = getSubtotal()
   const total = getTotal()
-  const discountAmount = subtotal - total
 
   return (
     <div className="fixed inset-0 z-[100] flex justify-end">
@@ -179,42 +161,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {/* Footer & Checkout */}
         {user && items.length > 0 && (
           <div className="p-6 border-t border-outline-variant/30 bg-surface-container-low/50 flex flex-col gap-4">
-            {/* Voucher input using shadcn Input and Button */}
-            <form onSubmit={handleApplyVoucher} className="flex gap-2">
-              <Input
-                type="text"
-                value={voucherInput}
-                onChange={(e) => setVoucherInput(e.target.value)}
-                placeholder="Nhập MAMXANH10..."
-                className="bg-surface-container-lowest rounded-xl text-xs h-10"
-              />
-              <Button
-                type="submit"
-                variant="secondary"
-                className="rounded-xl text-xs font-semibold shrink-0 h-10 px-4"
-              >
-                Áp dụng
-              </Button>
-            </form>
-
-            {voucherCode && (
-              <div className="text-xs text-emerald-700 font-medium flex items-center gap-1">
-                <span className="material-symbols-outlined text-[16px]">verified</span>
-                Đã giảm 10% với mã {voucherCode}
-              </div>
-            )}
-
-            <div className="flex flex-col gap-1.5 text-xs text-on-surface-variant pt-2 border-t border-outline-variant/20">
+            <div className="flex flex-col gap-1.5 text-xs text-on-surface-variant">
               <div className="flex justify-between">
                 <span>Tạm tính</span>
                 <span className="font-semibold text-on-surface">{formatCurrency(subtotal)}</span>
               </div>
-              {discountPercent > 0 && (
-                <div className="flex justify-between text-emerald-700">
-                  <span>Giảm giá</span>
-                  <span>-{formatCurrency(discountAmount)}</span>
-                </div>
-              )}
               <Separator className="my-1" />
               <div className="flex justify-between text-sm font-bold text-on-surface">
                 <span>Tổng cộng</span>

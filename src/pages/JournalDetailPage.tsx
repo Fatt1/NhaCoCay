@@ -451,9 +451,8 @@ export const JournalDetailPage: React.FC<JournalDetailPageProps> = ({
                                     key={st}
                                     type="button"
                                     onClick={() => handleStatusChange(step.stepNumber, st)}
-                                    className={`w-full text-left px-3 py-1.5 flex items-center justify-between hover:bg-surface-container transition-colors ${
-                                      isCur ? "font-bold text-primary bg-primary/5" : "text-on-surface"
-                                    }`}
+                                    className={`w-full text-left px-3 py-1.5 flex items-center justify-between hover:bg-surface-container transition-colors ${isCur ? "font-bold text-primary bg-primary/5" : "text-on-surface"
+                                      }`}
                                   >
                                     <span>{opt.label}</span>
                                     {isCur && (
@@ -486,29 +485,28 @@ export const JournalDetailPage: React.FC<JournalDetailPageProps> = ({
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-white/10 text-emerald-200 backdrop-blur-xs">
               <span className="material-symbols-outlined text-[15px]">psychiatry</span>
-              <span>Đồng Hành Suốt Mùa Vụ</span>
+              <span>Đồng hành cùng bạn</span>
             </div>
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
               Mầm Cây Của Bạn Cần Trợ Giúp Kịp Thời?
             </h3>
             <p className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed">
-              Bạn phát hiện hạt giống nảy mầm chậm lớn hay có bất kỳ băn khoăn nào khi chăm sóc cây?
-              Bác sĩ cây Nhà Có Cây sẵn sàng hỗ trợ trực tuyến để chẩn đoán và hướng dẫn phương án
-              khắc phục an toàn 100% hữu cơ.
+              Bạn phát hiện hạt giống nảy mầm chậm lớn hay có bất kỳ băn khoăn nào khi chăm sóc cây? Liên hệ Nhà Có Cây để được hỗ trợ hướng dẫn nhé
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-            <Button
-              type="button"
-              onClick={() => onNotify?.("Tính năng Bác sĩ cây trực tuyến 24/7 đang được kích hoạt!", "medical_services")}
-              className="rounded-2xl bg-white text-[#193a2c] hover:bg-white/90 font-bold px-5 py-3 shadow-md flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+            <a
+              href="https://www.facebook.com/profile.php?id=61595312774033"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-2xl bg-white text-[#193a2c] hover:bg-white/90 font-bold px-5 py-3 shadow-md flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm no-underline transition-colors"
             >
               <span className="material-symbols-outlined text-[20px] text-[#193a2c]">
                 medical_services
               </span>
-              <span>Hỏi Bác Sĩ Cây Ngay</span>
-            </Button>
+              <span>Hỗ trợ tư vấn</span>
+            </a>
 
             {onGoToForum && (
               <Button

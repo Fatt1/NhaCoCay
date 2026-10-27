@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useRef } from "react"
 
 interface AboutPageProps {
   onNavigateTab?: (tab: "home" | "kits" | "forum" | "journal" | "about") => void
@@ -47,6 +47,40 @@ export const AboutPage: React.FC<AboutPageProps> = ({
   onNavigateTab,
   onExploreKits,
 }) => {
+  const pageRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const root = pageRef.current
+    if (!root) return
+
+    if (typeof IntersectionObserver === "undefined") {
+      root.querySelectorAll(".reveal-on-scroll, .reveal-scale").forEach((el) => {
+        el.classList.add("is-revealed")
+      })
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed")
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -40px 0px",
+      }
+    )
+
+    const elements = root.querySelectorAll(".reveal-on-scroll, .reveal-scale")
+    elements.forEach((el) => observer.observe(el))
+
+    return () => observer.disconnect()
+  }, [])
+
   const handleGoHome = (e: React.MouseEvent) => {
     e.preventDefault()
     if (onNavigateTab) {
@@ -69,7 +103,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
   }
 
   return (
-    <div className="flex flex-col w-full min-h-[calc(100vh-5rem)]">
+    <div ref={pageRef} className="flex flex-col w-full min-h-[calc(100vh-5rem)]">
       {/* Subtle organic background decor */}
       <div className="relative w-full overflow-hidden">
         <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-secondary-container/30 blur-3xl pointer-events-none" />
@@ -78,7 +112,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
         {/* Main Container */}
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:py-12">
           {/* 1. Breadcrumb navigation */}
-          <nav aria-label="Đường dẫn trang" className="mb-8 lg:mb-12">
+          <nav aria-label="Đường dẫn trang" className="reveal-on-scroll mb-8 lg:mb-12">
             <ol className="flex items-center gap-2 text-xs sm:text-sm font-medium text-on-surface-variant">
               <li>
                 <button
@@ -100,7 +134,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           </nav>
 
           {/* 2. Khối Hero Giới Thiệu Thương Hiệu */}
-          <section className="flex flex-col items-center text-center max-w-3xl mx-auto mb-20 lg:mb-28 space-y-6">
+          <section className="reveal-on-scroll flex flex-col items-center text-center max-w-3xl mx-auto mb-20 lg:mb-28 space-y-6">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary-container/70 text-on-secondary-container text-xs font-semibold uppercase tracking-wider shadow-sm">
               <span className="material-symbols-outlined text-[16px]">potted_plant</span>
               <span>CÂU CHUYỆN THƯƠNG HIỆU</span>
@@ -135,7 +169,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           <section className="mb-20 lg:mb-28">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               {/* Cột 1: TẦM NHÌN */}
-              <div className="group relative p-8 lg:p-10 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden border border-outline-variant/30">
+              <div
+                className="reveal-on-scroll group relative p-8 lg:p-10 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden border border-outline-variant/30"
+                style={{ transitionDelay: "80ms" }}
+              >
                 <div className="absolute top-0 right-0 w-36 h-36 bg-secondary-container/30 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110 duration-500" />
                 <div>
                   <div className="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary mb-6 shadow-xs">
@@ -157,7 +194,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               </div>
 
               {/* Cột 2: SỨ MỆNH */}
-              <div className="group relative p-8 lg:p-10 rounded-2xl text-white shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden bg-[#14422d] border border-[#1e543b]">
+              <div
+                className="reveal-on-scroll group relative p-8 lg:p-10 rounded-2xl text-white shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden bg-[#14422d] border border-[#1e543b]"
+                style={{ transitionDelay: "220ms" }}
+              >
                 <div className="absolute top-0 right-0 w-36 h-36 bg-emerald-500/15 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110 duration-500" />
                 <div>
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center text-emerald-200 mb-6 bg-emerald-800/60 shadow-xs">
@@ -182,7 +222,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
           {/* 4. Khối Giá Trị Cốt Lõi (Đúng 5 giá trị) */}
           <section className="mb-20 lg:mb-28">
-            <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="reveal-on-scroll text-center max-w-2xl mx-auto mb-12">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container text-xs font-semibold text-secondary uppercase tracking-wider mb-3">
                 <span className="material-symbols-outlined text-[16px]">psychology</span>
                 <span>Nguyên tắc vững chắc</span>
@@ -193,23 +233,22 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {CORE_VALUES.map((item) => (
+              {CORE_VALUES.map((item, idx) => (
                 <div
                   key={item.num}
-                  className={`p-6 lg:p-7 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 relative group border border-outline-variant/30 ${
-                    item.isWide ? "md:col-span-2 lg:col-span-2" : ""
-                  }`}
+                  style={{ transitionDelay: `${(idx % 3) * 120 + 80}ms` }}
+                  className={`reveal-on-scroll p-6 lg:p-7 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 relative group border border-outline-variant/30 ${item.isWide ? "md:col-span-2 lg:col-span-2" : ""
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-5">
                     <span className="text-2xl lg:text-3xl font-black text-secondary/30 group-hover:text-primary transition-colors font-display">
                       {item.num}
                     </span>
                     <div
-                      className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
-                        item.num === "05"
-                          ? "bg-secondary-container text-primary"
-                          : "bg-surface-container-low text-primary group-hover:bg-primary/10"
-                      }`}
+                      className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${item.num === "05"
+                        ? "bg-secondary-container text-primary"
+                        : "bg-surface-container-low text-primary group-hover:bg-primary/10"
+                        }`}
                     >
                       <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
                     </div>
@@ -219,9 +258,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                     {item.title}
                   </h3>
                   <p
-                    className={`text-sm text-on-surface-variant leading-relaxed font-body ${
-                      item.isWide ? "max-w-xl" : ""
-                    }`}
+                    className={`text-sm text-on-surface-variant leading-relaxed font-body ${item.isWide ? "max-w-xl" : ""
+                      }`}
                   >
                     {item.desc}
                   </p>
@@ -233,7 +271,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           {/* 5. Khối Thông Tin Liên Hệ */}
           <section className="mb-16">
             <div className="rounded-3xl bg-surface-container-low p-8 lg:p-12 shadow-sm border border-outline-variant/30">
-              <div className="max-w-3xl mb-10">
+              <div className="reveal-on-scroll max-w-3xl mb-10">
                 <span className="text-xs uppercase tracking-wider text-secondary font-semibold block mb-2">
                   Đồng Hành Cùng Chúng Tôi
                 </span>
@@ -247,7 +285,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Điện thoại */}
-                <div className="p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div
+                  className="reveal-on-scroll p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 flex flex-col justify-between hover:shadow-md transition-shadow"
+                  style={{ transitionDelay: "80ms" }}
+                >
                   <div>
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-10 h-10 rounded-full bg-secondary-container/60 flex items-center justify-center text-primary">
@@ -274,7 +315,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 </div>
 
                 {/* Địa chỉ + Bản đồ */}
-                <div className="p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div
+                  className="reveal-on-scroll p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 flex flex-col justify-between hover:shadow-md transition-shadow"
+                  style={{ transitionDelay: "180ms" }}
+                >
                   <div>
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-10 h-10 rounded-full bg-secondary-container/60 flex items-center justify-center text-primary">
@@ -303,7 +347,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 </div>
 
                 {/* Kênh Mạng Xã Hội */}
-                <div className="p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div
+                  className="reveal-on-scroll p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 flex flex-col justify-between hover:shadow-md transition-shadow"
+                  style={{ transitionDelay: "280ms" }}
+                >
                   <div>
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-10 h-10 rounded-full bg-secondary-container/60 flex items-center justify-center text-primary">
@@ -337,7 +384,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                       >
                         <span className="flex items-center gap-2 font-medium">
                           <span className="material-symbols-outlined text-[18px] text-primary">photo_camera</span>
-                          <span>Instagram Blog</span>
+                          <span>Fanpage Instagram</span>
                         </span>
                         <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
                       </a>
@@ -349,7 +396,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                       >
                         <span className="flex items-center gap-2 font-medium">
                           <span className="material-symbols-outlined text-[18px] text-primary">groups</span>
-                          <span>Group Yêu Cây</span>
+                          <span>Group Nhà Có Cây</span>
                         </span>
                         <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
                       </a>
@@ -361,7 +408,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           </section>
 
           {/* Action CTA: Khám phá sản phẩm */}
-          <section className="mb-8 text-center bg-gradient-to-r from-emerald-900 to-[#14422d] text-white p-8 sm:p-12 rounded-3xl relative overflow-hidden shadow-lg">
+          <section className="reveal-scale mb-8 text-center bg-gradient-to-r from-emerald-900 to-[#14422d] text-white p-8 sm:p-12 rounded-3xl relative overflow-hidden shadow-lg">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
             <div className="relative z-10 max-w-2xl mx-auto space-y-4">
               <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-xs font-semibold uppercase tracking-wider">
@@ -371,7 +418,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 Bạn Đã Sẵn Sàng Vun Trồng Góc Xanh Của Mình?
               </h2>
               <p className="text-sm sm:text-base text-emerald-100/90 font-body">
-                Khám phá ngay các bộ kit trồng cây hữu cơ tiện lợi, trọn gói hạt giống, đất dinh dưỡng và chậu thân thiện môi trường từ Nhà Có Cây.
+                Khám phá ngay các bộ kit trồng cây tiện lợi và thân thiện môi trường từ Nhà Có Cây
               </p>
               <div className="pt-2">
                 <button

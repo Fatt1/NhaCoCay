@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import hinh1 from "@/assets/hinh1.jpg"
+import hinh2 from "@/assets/hinh2.jpg"
+import hinh3 from "@/assets/hinh3.jpg"
 
 const HERO_IMAGES = [
   {
-    url: "https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=1200&q=80",
-    alt: "Cây cà chua bi quả mọng chín đỏ trồng ban công",
+    url: hinh1,
+    alt: "Bộ kit gieo trồng tiện lợi và mầm xanh Nhà Có Cây",
   },
   {
-    url: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=1200&q=80",
-    alt: "Chậu dâu tây đỏ tươi sum suê cành lá",
+    url: hinh2,
+    alt: "Chậu cây xanh mộc mạc và bình yên tại nhà",
   },
   {
-    url: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1200&q=80",
-    alt: "Góc làm vườn mini và bộ dụng cụ gieo mầm xanh",
+    url: hinh3,
+    alt: "Không gian xanh chữa lành cùng Nhà Có Cây",
   },
 ]
 
@@ -76,8 +79,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </h1>
 
             <p className="font-body text-base sm:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
-              Trọn bộ kit trồng cây tự chăm sóc: Chậu gốm thủ công Bát Tràng, hạt giống F1 tuyển chọn,
-              giá thể hữu cơ vi sinh & ứng dụng nhật ký nhắc lịch thông minh đồng hành cùng bạn.
+              Bắt đầu góc xanh của riêng bạn với bộ kit gieo trồng tiện lợi từ Nhà Có Cây. Mỗi bộ kit được chuẩn bị đầy đủ từ hạt giống, viên nén xơ dừa đến hướng dẫn gieo trồng chi tiết, giúp bạn dễ dàng bắt đầu hành trình làm vườn ngay tại nhà. Tự tay gieo những hạt mầm nhỏ, chăm sóc từng chồi non và chờ đón những bông hoa đầu tiên khoe sắc. Bởi đôi khi, niềm vui giản dị nhất chính là được ngắm nhìn những điều nhỏ bé lớn lên mỗi ngày. 🌱
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
@@ -102,7 +104,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-outline-variant/30 text-on-surface-variant text-xs">
               <div className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
-                <span>Hạt giống F1 nảy mầm &gt;95%</span>
+                <span>Trọn bộ kit gieo trồng tiện lợi</span>
               </div>
               <span className="text-outline-variant">•</span>
               <div className="flex items-center gap-1.5">
@@ -127,9 +129,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 {HERO_IMAGES.map((img, idx) => (
                   <div
                     key={idx}
-                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                      currentImageIndex === idx ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
-                    }`}
+                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentImageIndex === idx ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
+                      }`}
                   >
                     <img
                       src={img.url}
@@ -165,11 +166,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       type="button"
                       onClick={() => setCurrentImageIndex(idx)}
                       aria-label={`Chuyển đến ảnh ${idx + 1}`}
-                      className={`transition-all rounded-full cursor-pointer ${
-                        currentImageIndex === idx
-                          ? "w-6 h-2 bg-white"
-                          : "size-2 bg-white/60 hover:bg-white/90"
-                      }`}
+                      className={`transition-all rounded-full cursor-pointer ${currentImageIndex === idx
+                        ? "w-6 h-2 bg-white"
+                        : "size-2 bg-white/60 hover:bg-white/90"
+                        }`}
                     />
                   ))}
                 </div>

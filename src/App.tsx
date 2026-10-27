@@ -415,6 +415,8 @@ function App() {
           onNotify={addToast}
           onSelectProduct={handleSelectProduct}
           postsVersion={postsVersion}
+          onGoToJournals={() => handleNavigateTab("journal")}
+          onGoToForum={() => handleNavigateTab("forum")}
         />
       )}
     </MainLayout>

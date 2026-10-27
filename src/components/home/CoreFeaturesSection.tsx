@@ -27,16 +27,16 @@ export const CoreFeaturesSection: React.FC = () => {
                   <span className="material-symbols-outlined text-[30px]">inventory_2</span>
                 </div>
                 <h3 className="font-heading font-semibold text-xl text-on-surface">
-                  Trọn Gói & Chuẩn Bị Tỉ Mỉ
+                  Đầy Đủ Cho Hành Trình Gieo Trồng
                 </h3>
                 <p className="font-body text-sm text-on-surface-variant leading-relaxed">
-                  Chậu gốm mộc nung xốp thoáng khí, giá thể phối trộn chuyên sâu cho từng loài cây cùng hạt giống F1 tỉ lệ nảy mầm kiểm định vượt 95%.
+                  Mỗi bộ kit được chuẩn bị sẵn hạt giống, viên nén xơ dừa, chậu trồng và hướng dẫn gieo hạt chi tiết. Tất cả những gì bạn cần để bắt đầu khu vườn nhỏ đều được gói gọn trong một bộ kit tiện lợi.
                 </p>
               </div>
               <div className="flex flex-col gap-4">
                 <Separator />
                 <div className="flex items-center text-primary text-xs font-semibold gap-1">
-                  <span>Nguyên liệu 100% hữu cơ</span>
+                  <span>Dễ dàng bắt đầu tại nhà</span>
                   <span className="material-symbols-outlined text-[16px]">verified</span>
                 </div>
               </div>
@@ -51,16 +51,16 @@ export const CoreFeaturesSection: React.FC = () => {
                   <span className="material-symbols-outlined text-[30px]">calendar_clock</span>
                 </div>
                 <h3 className="font-heading font-semibold text-xl text-on-surface">
-                  Nhật Ký & Nhắc Lịch Thông Minh
+                  Đồng Hành Cùng Từng Mầm Xanh
                 </h3>
                 <p className="font-body text-sm text-on-surface-variant leading-relaxed">
-                  Không còn lo lắng việc quên tưới nước hay phơi nắng. Nhật ký tự động gợi ý lịch trình chăm sóc qua từng chu kỳ sinh trưởng của cây.
+                  Từ lúc gieo hạt đến khi cây lớn lên và nở hoa, bạn có thể theo dõi từng giai đoạn phát triển và tham khảo hướng dẫn chăm sóc phù hợp. Dù chưa có kinh nghiệm làm vườn, bạn vẫn có thể tự tay vun trồng những bông hoa đầu tiên.
                 </p>
               </div>
               <div className="flex flex-col gap-4">
                 <Separator />
                 <div className="flex items-center text-primary text-xs font-semibold gap-1">
-                  <span>Đồng bộ thông báo tức thì</span>
+                  <span>Từng bước chăm hoa thật dễ dàng</span>
                   <span className="material-symbols-outlined text-[16px]">notifications_active</span>
                 </div>
               </div>
@@ -75,16 +75,16 @@ export const CoreFeaturesSection: React.FC = () => {
                   <span className="material-symbols-outlined text-[30px]">diversity_3</span>
                 </div>
                 <h3 className="font-heading font-semibold text-xl text-on-surface">
-                  Diễn Đàn Kết Nối Sôi Động
+                  Khám Phá Khu Vườn Theo Cách Riêng
                 </h3>
                 <p className="font-body text-sm text-on-surface-variant leading-relaxed">
-                  Hơn 20.000 người yêu cây sẵn sàng sẻ chia kinh nghiệm. Bác sĩ cây cảnh đồng hành giải đáp bệnh lá, bắt sâu và tư vấn dinh dưỡng 24/7.
+                  Từ hoa Sao Nhái dịu dàng, Cát Tường duyên dáng đến Hướng Dương rực rỡ, Nhà Có Cây mang đến nhiều lựa chọn để bạn tìm thấy giống hoa yêu thích. Tự tay gieo trồng, kiên nhẫn chăm sóc và biến góc nhỏ của mình thành một khu vườn đầy màu sắc
                 </p>
               </div>
               <div className="flex flex-col gap-4">
                 <Separator />
                 <div className="flex items-center text-primary text-xs font-semibold gap-1">
-                  <span>Chuyên gia phản hồi trong 15p</span>
+                  <span>Gieo sắc hoa, tô điểm không gian sống</span>
                   <span className="material-symbols-outlined text-[16px]">medical_services</span>
                 </div>
               </div>

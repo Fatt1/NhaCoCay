@@ -1,5 +1,5 @@
 import React from "react"
-import { Header, Footer, ToastContainer, type ToastMessage } from "@/components/common"
+import { Header, Footer, ToastContainer, FloatingChatWidget, type ToastMessage } from "@/components/common"
 import { CartDrawer } from "@/components/cart/CartDrawer"
 import { NewPostModal } from "@/components/community/NewPostModal"
 import { AuthModal } from "@/components/auth/AuthModal"
@@ -63,7 +63,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
       <main className="w-full pt-20 bg-surface flex-grow">{children}</main>
 
-      <Footer />
+      <Footer onNotify={onNotify} />
 
       {/* Global Modals & Drawers */}
       <CartDrawer
@@ -86,6 +86,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         onSuccess={(msg) => onNotify?.(msg, "eco")}
       />
       <ToastContainer toasts={toasts} onRemove={onRemoveToast} />
+      <FloatingChatWidget />
     </div>
   )
 }

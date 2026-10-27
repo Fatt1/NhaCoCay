@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface CommunitySectionProps {
-  onOpenNewPost: () => void
+  onOpenNewPost?: () => void
   onEditPost?: (post: DiaryPost) => void
   onNotify?: (message: string, icon?: string) => void
   postsVersion?: number
   onRefreshPosts?: () => void
+  onGoToForum?: () => void
 }
 
 export const CommunitySection: React.FC<CommunitySectionProps> = ({
@@ -20,16 +21,26 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
   onNotify,
   postsVersion = 0,
   onRefreshPosts,
+  onGoToForum,
 }) => {
   const [posts, setPosts] = useState<DiaryPost[]>([])
   const [loading, setLoading] = useState(true)
+
+  const handleGoToForum = () => {
+    if (onGoToForum) {
+      onGoToForum()
+    } else {
+      window.location.hash = "#/forum"
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   useEffect(() => {
     let isMounted = true
     getPosts()
       .then((data) => {
         if (isMounted) {
-          setPosts(data)
+          setPosts(data.slice(0, 2))
           setLoading(false)
         }
       })
@@ -72,11 +83,11 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
             </p>
           </div>
           <Button
-            onClick={onOpenNewPost}
+            onClick={handleGoToForum}
             className="px-6 py-3 rounded-full bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer shrink-0 h-auto"
           >
-            <span className="material-symbols-outlined text-[20px]">edit_square</span>
-            <span>+ Viết bài mới</span>
+            <span>Xem thêm</span>
+            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
           </Button>
         </div>
 

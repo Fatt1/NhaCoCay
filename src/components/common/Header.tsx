@@ -1,4 +1,5 @@
 import React from "react"
+import logoImg from "@/assets/Logo.png"
 import { useAuthStore, useCartStore } from "@/stores"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -83,14 +84,14 @@ export const Header: React.FC<HeaderProps> = ({
             window.location.hash = "#/"
             window.scrollTo({ top: 0, behavior: "smooth" })
           }}
-          className="flex items-center gap-2 cursor-pointer shrink-0"
+          className="flex items-center gap-2.5 cursor-pointer shrink-0 group select-none"
         >
-          <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-            <span className="material-symbols-outlined text-[24px]">spa</span>
-          </div>
-          <span className="font-heading font-bold text-xl sm:text-2xl text-on-surface tracking-tight">
-            Nhà Có Cây
-          </span>
+          <img
+            src={logoImg}
+            alt="Nhà Có Cây Logo"
+            className="h-12 sm:h-18 w-auto object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105"
+          />
+
         </div>
 
         {/* Centered Navigation Tabs */}
@@ -100,41 +101,37 @@ export const Header: React.FC<HeaderProps> = ({
               onNavigateTab?.("home")
               window.scrollTo({ top: 0, behavior: "smooth" })
             }}
-            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${
-              activeTab === "home"
-                ? "text-primary border-b-2 border-primary"
-                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
-            }`}
+            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${activeTab === "home"
+              ? "text-primary border-b-2 border-primary"
+              : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
+              }`}
           >
             Trang Chủ
           </button>
           <button
             onClick={() => onNavigateTab?.("kits")}
-            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${
-              activeTab === "kits"
-                ? "text-primary border-b-2 border-primary"
-                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
-            }`}
+            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${activeTab === "kits"
+              ? "text-primary border-b-2 border-primary"
+              : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
+              }`}
           >
             Bộ Kit Trồng Cây
           </button>
           <button
             onClick={() => onNavigateTab?.("forum")}
-            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${
-              activeTab === "forum"
-                ? "text-primary border-b-2 border-primary"
-                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
-            }`}
+            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${activeTab === "forum"
+              ? "text-primary border-b-2 border-primary"
+              : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
+              }`}
           >
             Diễn Đàn
           </button>
           <button
             onClick={() => onNavigateTab?.("journal")}
-            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${
-              activeTab === "journal"
-                ? "text-primary border-b-2 border-primary"
-                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
-            }`}
+            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${activeTab === "journal"
+              ? "text-primary border-b-2 border-primary"
+              : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
+              }`}
           >
             Nhật Ký Cây
           </button>
@@ -144,11 +141,10 @@ export const Header: React.FC<HeaderProps> = ({
               window.location.hash = "#/about"
               window.scrollTo({ top: 0, behavior: "smooth" })
             }}
-            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${
-              activeTab === "about"
-                ? "text-primary border-b-2 border-primary"
-                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
-            }`}
+            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${activeTab === "about"
+              ? "text-primary border-b-2 border-primary"
+              : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
+              }`}
           >
             Về Chúng Tôi
           </button>

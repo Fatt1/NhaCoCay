@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { useAuthStore } from "@/stores"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,30 +12,29 @@ interface JournalSectionProps {
   onOpenNewPost?: () => void
   onEditPost?: (post: DiaryPost) => void
   postsVersion?: number
+  onGoToJournals?: () => void
 }
 
 export const JournalSection: React.FC<JournalSectionProps> = ({
   onNotify,
   onOpenAuthModal,
+  onGoToJournals,
 }) => {
   const { user } = useAuthStore()
-  const [points, setPoints] = useState(320)
-  const [checkedIn, setCheckedIn] = useState(false)
 
-  const handleCheckIn = () => {
+  const handleGoToJournal = () => {
     if (!user) {
-      onNotify?.("Vui lòng đăng nhập để check-in và tích lũy điểm mầm!", "lock")
+      onNotify?.("Vui lòng đăng nhập để xem và ghi chép nhật ký cây!", "lock")
       onOpenAuthModal?.()
       return
     }
 
-    if (!checkedIn) {
-      setPoints((prev) => prev + 20)
-      setCheckedIn(true)
-      onNotify?.("Check-in thành công! Bạn nhận được +20 🌱 điểm mầm", "eco")
+    if (onGoToJournals) {
+      onGoToJournals()
     } else {
-      onNotify?.("Hôm nay bạn đã check-in rồi nhé! Cây đang lớn rất tốt 🌱", "check_circle")
+      window.location.hash = "#/journal"
     }
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   return (
@@ -65,7 +64,7 @@ export const JournalSection: React.FC<JournalSectionProps> = ({
             </Button>
           </Card>
         ) : (
-          /* Khi đã đăng nhập: Hiển thị thông tin người dùng và các cây đang theo dõi */
+          /* Khi đã đăng nhập: Hiển thị thông tin người dùng và nút theo dõi tiến độ */
           <>
             {/* Dashboard Top Header Bar */}
             <Card className="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 border border-outline-variant/30">
@@ -81,14 +80,9 @@ export const JournalSection: React.FC<JournalSectionProps> = ({
                   </span>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <h2 className="font-heading font-bold text-xl text-on-surface">
-                      {user.fullName}
-                    </h2>
-                    <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                      {points} 🌱 Điểm mầm
-                    </span>
-                  </div>
+                  <h2 className="font-heading font-bold text-xl text-on-surface">
+                    {user.fullName}
+                  </h2>
                   <p className="text-xs text-on-surface-variant">
                     {user.email} • {user.phoneNumber || "Thành viên yêu cây"}
                   </p>
@@ -97,17 +91,14 @@ export const JournalSection: React.FC<JournalSectionProps> = ({
 
               <div className="flex flex-col sm:flex-row items-center gap-4 bg-surface-container-low px-6 py-4 rounded-2xl border border-outline-variant/30 shadow-sm">
                 <Button
-                  onClick={handleCheckIn}
+                  onClick={handleGoToJournal}
                   className="px-6 py-3 rounded-full bg-primary text-on-primary font-bold text-sm hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95 cursor-pointer h-auto"
                 >
-                  <span className="material-symbols-outlined text-[20px]">water_drop</span>
-                  <span>{checkedIn ? "Đã cập nhật hôm nay 🌱" : "Theo dõi tiến độ cây 🌱"}</span>
+                  <span className="material-symbols-outlined text-[20px]">menu_book</span>
+                  <span>Theo dõi tiến độ cây 🌱</span>
                 </Button>
               </div>
             </Card>
-
-
-
           </>
         )}
       </div>

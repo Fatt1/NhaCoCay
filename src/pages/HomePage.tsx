@@ -18,6 +18,8 @@ interface HomePageProps {
   onNotify: (message: string, icon?: string) => void
   onSelectProduct?: (product: Product) => void
   postsVersion?: number
+  onGoToJournals?: () => void
+  onGoToForum?: () => void
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -28,6 +30,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   onNotify,
   onSelectProduct,
   postsVersion,
+  onGoToJournals,
+  onGoToForum,
 }) => {
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
@@ -62,6 +66,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         onOpenNewPost={onOpenNewPost}
         onEditPost={onEditPost}
         postsVersion={postsVersion}
+        onGoToJournals={onGoToJournals}
       />
 
       {/* 5. Community Forum Section */}
@@ -70,6 +75,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         onEditPost={onEditPost}
         onNotify={onNotify}
         postsVersion={postsVersion}
+        onGoToForum={onGoToForum}
       />
 
       {/* 6. Testimonials & Community Reviews */}

@@ -22,7 +22,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   onOpenAuthModal,
 }) => {
   const { user } = useAuthStore()
-  const { items, getSubtotal, getTotal, discountPercent, voucherCode, clearCart } = useCartStore()
+  const { items, getSubtotal, getTotal, clearCart } = useCartStore()
 
   // Form states
   const [fullName, setFullName] = useState("")
@@ -46,7 +46,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
   const subtotal = getSubtotal()
   const total = getTotal()
-  const discountAmount = subtotal - total
 
   const formatCurrency = (val: number) => {
     return val.toLocaleString("vi-VN") + "₫"
@@ -405,13 +404,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 <span>Tạm tính</span>
                 <span className="font-semibold text-on-surface">{formatCurrency(subtotal)}</span>
               </div>
-
-              {discountPercent > 0 && (
-                <div className="flex justify-between text-emerald-700">
-                  <span>Giảm giá voucher {voucherCode && `(${voucherCode})`}</span>
-                  <span className="font-semibold">-{formatCurrency(discountAmount)}</span>
-                </div>
-              )}
 
               <div className="flex justify-between">
                 <span>Phí vận chuyển</span>

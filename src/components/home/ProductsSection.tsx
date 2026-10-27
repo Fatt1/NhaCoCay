@@ -74,7 +74,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
               Bộ Kit Trồng Cây Yêu Thích
             </h2>
             <p className="font-body text-sm text-on-surface-variant">
-              Đã bao gồm đầy đủ hạt giống, đất sinh học, chậu gốm & cẩm nang chi tiết.
+              Đã bao gồm đầy đủ hạt giống, đất sinh học, chậu gốm & cẩm nang chi tiết." thành "Đã bao gồm đầy đủ hạt giống, viên nén xơ dừa, chậu giấy, hướng dẫn chi tiết & sticker...
             </p>
           </div>
 

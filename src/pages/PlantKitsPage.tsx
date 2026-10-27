@@ -134,8 +134,7 @@ export const PlantKitsPage: React.FC<PlantKitsPageProps> = ({
               <span className="text-primary text-3xl">🌱</span>
             </h1>
             <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
-              Tất cả những gì bạn cần để bắt đầu một góc xanh bình yên tại nhà — từ đất hữu cơ vi sinh,
-              hạt giống F1 đến chậu gốm mộc Bát Tràng và lịch chăm sóc tự động.
+              Tất cả những gì bạn cần để bắt đầu một góc xanh bình yên tại nhà — từ hạt giống, viên nén sơ dừa đến chậu giấy và hướng dẫn chăm sóc cây.
             </p>
           </div>
 
