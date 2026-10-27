@@ -40,7 +40,7 @@ const STATUS_CONFIG: Record<
 
 export const OrdersHistoryPage: React.FC<OrdersHistoryPageProps> = ({
   onBack,
-  onSelectOrder: _onSelectOrder,
+  onSelectOrder,
   onOpenAuthModal,
   onGoToShop,
 }) => {
@@ -116,21 +116,27 @@ export const OrdersHistoryPage: React.FC<OrdersHistoryPageProps> = ({
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-20">
-      {/* Top Breadcrumb & Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/15 pb-6">
-        <div className="space-y-1">
-          <button
-            type="button"
-            onClick={onBack}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer mb-1"
-          >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            <span>Quay lại</span>
-          </button>
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
-            <span className="w-2 h-2 rounded-full bg-primary" />
-            <span>TÀI KHOẢN CỦA TÔI</span>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 pb-20">
+      {/* Top Back Navigation */}
+      <div>
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer group w-fit"
+        >
+          <span className="material-symbols-outlined text-[18px] sm:text-[20px] transition-transform group-hover:-translate-x-1">arrow_back</span>
+          <span>Quay lại</span>
+        </button>
+      </div>
+
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/15 pb-5">
+        <div className="space-y-1.5">
+          <div>
+            <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+              <span className="w-2 h-2 rounded-full bg-primary" />
+              <span>TÀI KHOẢN CỦA TÔI</span>
+            </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-[#193a2c] tracking-tight">
             Lịch Sử Đơn Hàng
@@ -143,7 +149,7 @@ export const OrdersHistoryPage: React.FC<OrdersHistoryPageProps> = ({
         <Button
           type="button"
           onClick={onGoToShop}
-          className="rounded-full bg-primary text-on-primary font-semibold px-6 shadow-sm flex items-center gap-2 self-start sm:self-center cursor-pointer"
+          className="rounded-full bg-primary text-on-primary font-semibold px-6 shadow-sm flex items-center gap-2 self-start sm:self-center cursor-pointer shrink-0"
         >
           <span className="material-symbols-outlined text-[18px]">storefront</span>
           <span>Khám Phá Cửa Hàng</span>
@@ -246,8 +252,8 @@ export const OrdersHistoryPage: React.FC<OrdersHistoryPageProps> = ({
                 </div>
 
                 {/* Order Footer Info */}
-                <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-outline-variant/15 text-xs">
-                  <div className="space-y-0.5">
+                <div className="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-t border-outline-variant/15 text-xs">
+                  <div className="space-y-1">
                     <p className="text-on-surface-variant">
                       Giao tới:{" "}
                       <span className="font-semibold text-on-surface">
@@ -264,13 +270,23 @@ export const OrdersHistoryPage: React.FC<OrdersHistoryPageProps> = ({
                     )}
                   </div>
 
-                  <div className="text-right shrink-0">
-                    <span className="text-[11px] text-on-surface-variant block">
+                  <div className="flex sm:flex-col justify-between sm:text-right items-center sm:items-end pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/10 shrink-0">
+                    <span className="text-xs text-on-surface-variant">
                       Tổng cộng ({totalQty} sản phẩm)
                     </span>
-                    <span className="font-extrabold text-base text-[#193a2c]">
+                    <span className="font-extrabold text-base sm:text-lg text-[#193a2c]">
                       {formatCurrency(order.totalAmount)}
                     </span>
+                    {onSelectOrder && (
+                      <button
+                        type="button"
+                        onClick={() => onSelectOrder(order.id)}
+                        className="mt-1 text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Chi tiết đơn hàng</span>
+                        <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

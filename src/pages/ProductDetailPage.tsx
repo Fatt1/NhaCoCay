@@ -219,9 +219,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   return (
     <div className="bg-surface min-h-screen pb-24">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8 flex flex-col gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-8 flex flex-col gap-8 sm:gap-10">
         {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-xs text-on-surface-variant font-medium select-none">
+        <nav className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-on-surface-variant font-medium select-none">
           <button
             type="button"
             onClick={onBack}
@@ -245,10 +245,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         </nav>
 
         {/* Top Product Showcase (2 Columns) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
           {/* Left Column: Image Gallery */}
-          <div className="lg:col-span-6 flex flex-col gap-4">
-            <div className="w-full aspect-[4/3] sm:aspect-square rounded-3xl overflow-hidden shadow-sm border border-outline-variant/30 bg-surface-container-low relative select-none">
+          <div className="lg:col-span-6 flex flex-col gap-3.5 sm:gap-4">
+            <div className="w-full aspect-[4/3] sm:aspect-square rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-outline-variant/30 bg-surface-container-low relative select-none">
               <img
                 src={imagesList[selectedImageIndex] || product.coverImage}
                 alt={product.name}
@@ -258,13 +258,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             {/* Thumbnail Navigation Row */}
             {imagesList.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-1">
+              <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto pb-1">
                 {imagesList.map((img, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`relative size-20 sm:size-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
+                    className={`relative size-16 sm:size-20 rounded-xl sm:rounded-2xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
                       selectedImageIndex === idx
                         ? "border-primary ring-2 ring-primary/30"
                         : "border-outline-variant/30 opacity-70 hover:opacity-100"
@@ -278,27 +278,27 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
 
           {/* Right Column: Title, Pricing, Actions */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-on-surface tracking-tight leading-tight">
+          <div className="lg:col-span-6 flex flex-col gap-5 sm:gap-6">
+            <div className="flex flex-col gap-1.5 sm:gap-2">
+              <h1 className="font-heading text-xl sm:text-3xl lg:text-4xl font-bold text-on-surface tracking-tight leading-tight">
                 {product.name}
               </h1>
-              <p className="font-body text-sm text-on-surface-variant leading-relaxed">
+              <p className="font-body text-xs sm:text-sm text-on-surface-variant leading-relaxed">
                 {product.shortDescription}
               </p>
             </div>
 
             {/* Price Box */}
-            <div className="bg-surface-container-low/70 rounded-2xl p-4 sm:p-5 flex flex-wrap items-baseline gap-4 border border-outline-variant/20">
+            <div className="bg-surface-container-low/70 rounded-2xl p-3.5 sm:p-5 flex flex-wrap items-baseline gap-3 sm:gap-4 border border-outline-variant/20">
               <span className="font-bold text-2xl sm:text-3xl text-primary font-heading">
                 {formatCurrency(product.salePrice)}
               </span>
               {discountPercent > 0 && (
                 <>
-                  <span className="text-sm sm:text-base text-outline line-through">
+                  <span className="text-xs sm:text-base text-outline line-through">
                     {formatCurrency(product.originalPrice)}
                   </span>
-                  <Badge className="bg-[#1b4332] text-white text-xs px-2.5 py-0.5 rounded-full font-semibold border-none shadow-none">
+                  <Badge className="bg-[#1b4332] text-white text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full font-semibold border-none shadow-none">
                     Tiết kiệm {discountPercent}%
                   </Badge>
                 </>
@@ -321,9 +321,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
             {/* Quantity Selector & Action Buttons */}
             <div className="flex flex-col gap-2 pt-1">
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                 {/* Counter */}
-                <div className="flex items-center bg-surface-container-low rounded-2xl border border-outline-variant/30 p-1">
+                <div className="flex items-center justify-between sm:justify-start bg-surface-container-low rounded-2xl border border-outline-variant/30 p-1 w-full sm:w-auto shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -345,24 +345,26 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </button>
                 </div>
 
-                {/* Add To Cart Button */}
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={product.stockQuantity <= 0}
-                  className="flex-1 bg-[#183d2c] hover:bg-[#112d20] text-white font-semibold py-4 px-6 rounded-2xl h-auto flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm text-sm disabled:opacity-50"
-                >
-                  <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
-                  <span>Thêm Vào Giỏ Hàng</span>
-                </Button>
+                <div className="flex items-center gap-2 sm:gap-3 flex-1">
+                  {/* Add To Cart Button */}
+                  <Button
+                    onClick={handleAddToCart}
+                    disabled={product.stockQuantity <= 0}
+                    className="flex-1 bg-[#183d2c] hover:bg-[#112d20] text-white font-semibold py-3 sm:py-4 px-3 sm:px-6 rounded-2xl h-auto flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer shadow-sm text-xs sm:text-sm disabled:opacity-50"
+                  >
+                    <span className="material-symbols-outlined text-[18px] sm:text-[20px]">shopping_cart</span>
+                    <span>Thêm Vào Giỏ</span>
+                  </Button>
 
-                {/* Buy Now Button */}
-                <Button
-                  onClick={handleBuyNow}
-                  disabled={product.stockQuantity <= 0}
-                  className="bg-[#c3eed7] hover:bg-[#b0e2c8] text-[#134931] font-semibold py-4 px-6 rounded-2xl h-auto transition-all cursor-pointer shadow-none text-sm disabled:opacity-50"
-                >
-                  Mua Ngay
-                </Button>
+                  {/* Buy Now Button */}
+                  <Button
+                    onClick={handleBuyNow}
+                    disabled={product.stockQuantity <= 0}
+                    className="bg-[#c3eed7] hover:bg-[#b0e2c8] text-[#134931] font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-2xl h-auto transition-all cursor-pointer shadow-none text-xs sm:text-sm disabled:opacity-50 shrink-0"
+                  >
+                    Mua Ngay
+                  </Button>
+                </div>
               </div>
 
               {quantity >= product.stockQuantity && product.stockQuantity > 0 && (
@@ -562,7 +564,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           {suggestedProducts.length === 0 ? (
             <p className="text-xs text-on-surface-variant py-4">Không có sản phẩm gợi ý nào.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {suggestedProducts.map((p) => (
                 <ProductCard
                   key={p.id}

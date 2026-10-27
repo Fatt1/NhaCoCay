@@ -192,15 +192,15 @@ export const JournalDetailPage: React.FC<JournalDetailPageProps> = ({
   const specs = product?.specifications
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-16">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 pb-16">
       {/* Top Bar Navigation & Delete */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+          className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+          <span className="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_back</span>
           <span>Danh Sách Nhật Ký</span>
         </button>
 
@@ -218,12 +218,12 @@ export const JournalDetailPage: React.FC<JournalDetailPageProps> = ({
         </div>
       </div>
 
-      {/* Header Info Banner: Cà Chua Bi Cherry Đỏ */}
-      <div className="space-y-1.5">
-        <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-[#193a2c] tracking-tight">
+      {/* Header Info Banner */}
+      <div className="space-y-1 sm:space-y-1.5">
+        <h1 className="font-heading text-xl sm:text-3xl font-extrabold text-[#193a2c] tracking-tight">
           {diary.plantName}
         </h1>
-        <p className="text-sm text-[#4a5568] font-medium flex flex-wrap items-center gap-2">
+        <p className="text-xs sm:text-sm text-[#4a5568] font-medium flex flex-wrap items-center gap-1.5 sm:gap-2">
           <span className="font-bold text-[#2d3748]">Giai đoạn:</span>
           <span>Nảy mầm &amp; Phát triển lá non</span>
           <span className="text-[#a0aec0]">•</span>
@@ -233,8 +233,8 @@ export const JournalDetailPage: React.FC<JournalDetailPageProps> = ({
         </p>
       </div>
 
-      {/* 4 Specification Cards (Lấy từ product.specifications khớp với mockup) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 4 Specification Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {/* Card 1: Tỷ lệ nảy mầm */}
         <div className="bg-white rounded-3xl p-5 border border-[#e2e8f0] shadow-2xs flex flex-col justify-between h-34 relative">
           <div className="flex items-center justify-between">

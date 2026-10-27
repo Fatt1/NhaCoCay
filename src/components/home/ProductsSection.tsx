@@ -65,18 +65,18 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
   }
 
   return (
-    <section className="py-20 bg-surface" id="shop-section">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-          <div className="flex flex-col gap-2">
+    <section className="py-12 md:py-20 bg-surface" id="shop-section">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-8 sm:mb-12">
+          <div className="flex flex-col gap-1.5 sm:gap-2">
             <span className="text-xs text-primary uppercase tracking-wider font-semibold block">
               CỬA HÀNG XANH
             </span>
-            <h2 className="font-heading text-2xl sm:text-2xl font-bold text-on-surface tracking-tight">
+            <h2 className="font-heading text-2xl sm:text-3xl font-bold text-on-surface tracking-tight">
               Bộ Kit Trồng Cây Yêu Thích
             </h2>
-            <p className="font-body text-sm text-on-surface-variant">
-              Đã bao gồm đầy đủ hạt giống, đất sinh học, chậu gốm & cẩm nang chi tiết." thành "Đã bao gồm đầy đủ hạt giống, viên nén xơ dừa, chậu giấy, hướng dẫn chi tiết & sticker...
+            <p className="font-body text-xs sm:text-sm text-on-surface-variant max-w-xl">
+              Đã bao gồm đầy đủ hạt giống, viên nén xơ dừa, chậu giấy, hướng dẫn chi tiết &amp; sticker trang trí mầm cây.
             </p>
           </div>
 
@@ -88,7 +88,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
                 onExploreKits()
               }
             }}
-            className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-semibold transition-colors shrink-0 cursor-pointer"
+            className="inline-flex items-center gap-1 text-xs sm:text-sm text-primary hover:underline font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-auto"
           >
             <span>Xem tất cả bộ kit</span>
             <span className="material-symbols-outlined text-[16px]">chevron_right</span>
@@ -96,7 +96,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4].map((n) => (
               <Card
                 key={n}
@@ -116,12 +116,13 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="py-12 flex flex-col items-center justify-center text-center text-on-surface-variant gap-2">
+          <div className="py-12 flex flex-col items-center justify-center text-center text-on-surface-variant gap-2 bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/30">
             <span className="material-symbols-outlined text-4xl text-outline">search_off</span>
-            <p className="text-sm">Không tìm thấy sản phẩm phù hợp với từ khóa "{searchKeyword}"</p>
+            <p className="text-sm font-semibold text-on-surface">Không tìm thấy sản phẩm phù hợp</p>
+            <p className="text-xs text-on-surface-variant">Không có kết quả nào cho từ khóa "{searchKeyword}"</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

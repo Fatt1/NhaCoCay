@@ -30,10 +30,10 @@ export const FloatingChatWidget: React.FC = () => {
   }, [isOpen])
 
   return (
-    <div ref={widgetRef} className="fixed bottom-6 right-6 z-[110] flex flex-col items-end select-none">
+    <div ref={widgetRef} className="fixed bottom-6 right-6 z-40 flex flex-col items-end select-none">
       {/* Popup / Card phía trên */}
       {isOpen && (
-        <div className="absolute bottom-16 right-0 mb-2 w-72 sm:w-80 bg-surface-container-lowest/95 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-outline-variant/30 shadow-2xl p-4 sm:p-5 flex flex-col gap-3.5 origin-bottom-right animate-in fade-in zoom-in-95 duration-200">
+        <div className="absolute bottom-16 right-0 mb-2 w-[calc(100vw-2rem)] max-w-xs sm:w-80 bg-surface-container-lowest/95 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-outline-variant/30 shadow-2xl p-4 sm:p-5 flex flex-col gap-3.5 origin-bottom-right animate-in fade-in zoom-in-95 duration-200">
           {/* Header */}
           <div className="flex items-center justify-between pb-2.5 border-b border-outline-variant/20">
             <div className="flex items-center gap-2.5">

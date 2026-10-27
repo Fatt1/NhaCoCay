@@ -135,8 +135,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   }
 
   return (
-    <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
-      <Card className="bg-surface-container-lowest rounded-3xl max-w-md w-full shadow-2xl relative p-6 sm:p-8 flex flex-col gap-6 border border-outline-variant/30 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-[110] flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <Card className="bg-surface-container-lowest rounded-2xl sm:rounded-3xl max-w-md w-full max-h-[92vh] overflow-y-auto shadow-2xl relative p-5 sm:p-8 flex flex-col gap-5 sm:gap-6 border border-outline-variant/30 animate-in fade-in zoom-in-95 duration-200">
         <CardContent className="p-0 flex flex-col gap-5">
           {/* Header & Tabs */}
           <div className="flex items-center justify-between border-b border-outline-variant/20 pb-4">

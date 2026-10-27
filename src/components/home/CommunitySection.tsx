@@ -68,24 +68,24 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
   }
 
   return (
-    <section className="py-20 bg-surface" id="community-section">
-      <div className="max-w-4xl mx-auto px-6 lg:px-12 flex flex-col gap-10">
+    <section className="py-12 md:py-20 bg-surface" id="community-section">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 flex flex-col gap-6 sm:gap-10">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-2">
-          <div className="flex flex-col gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+          <div className="flex flex-col gap-1.5 sm:gap-2">
             <span className="text-xs text-primary uppercase tracking-wider font-semibold block">
               Cộng Đồng Xanh
             </span>
-            <h2 className="font-heading text-2xl sm:text-2xl text-on-surface font-bold tracking-tight">
+            <h2 className="font-heading text-2xl sm:text-3xl text-on-surface font-bold tracking-tight">
               Diễn Đàn Trồng Cây
             </h2>
-            <p className="font-body text-sm text-on-surface-variant">
+            <p className="font-body text-xs sm:text-sm text-on-surface-variant">
               Hỏi đáp kỹ thuật, sẻ chia thành quả và trao đổi cành giâm cùng bạn hữu.
             </p>
           </div>
           <Button
             onClick={handleGoToForum}
-            className="px-6 py-3 rounded-full bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer shrink-0 h-auto"
+            className="w-full sm:w-auto px-6 py-3 rounded-full bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer shrink-0 h-auto"
           >
             <span>Xem thêm</span>
             <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -93,13 +93,13 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
         </div>
 
         {/* Centered Posts List using reusable PostCard */}
-        <div className="w-full flex flex-col gap-6">
+        <div className="w-full flex flex-col gap-5 sm:gap-6">
           {loading ? (
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4 sm:gap-6">
               {[1, 2].map((n) => (
                 <Card
                   key={n}
-                  className="bg-surface-container-lowest rounded-3xl p-6 sm:p-7 border border-outline-variant/30 flex flex-col gap-4"
+                  className="bg-surface-container-lowest rounded-3xl p-4 sm:p-7 border border-outline-variant/30 flex flex-col gap-4"
                 >
                   <div className="flex items-center gap-3">
                     <Skeleton className="size-11 rounded-full" />

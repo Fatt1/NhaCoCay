@@ -55,72 +55,72 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   }
 
   return (
-    <section className="relative overflow-hidden pt-6 pb-20 md:pb-28">
+    <section className="relative overflow-hidden pt-4 sm:pt-6 pb-12 sm:pb-20 md:pb-28">
       {/* Ambient Botanical Backdrops */}
       <div className="absolute -top-32 -left-32 size-96 rounded-full bg-[#cde8d5]/40 blur-3xl pointer-events-none" />
       <div className="absolute top-1/3 -right-24 size-80 rounded-full bg-[#bceecf]/30 blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center pt-4 md:pt-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center pt-2 md:pt-6">
           {/* Left Column: Hero Text & CTAs */}
-          <div className="lg:col-span-7 flex flex-col items-start gap-6">
+          <div className="lg:col-span-7 flex flex-col items-start gap-4 sm:gap-6">
             <Badge
               variant="secondary"
-              className="px-4 py-1.5 rounded-full bg-secondary-container/80 text-on-secondary-container border border-secondary-container flex items-center gap-2"
+              className="px-3.5 sm:px-4 py-1.5 rounded-full bg-secondary-container/80 text-on-secondary-container border border-secondary-container flex items-center gap-2"
             >
-              <span className="material-symbols-outlined text-[18px] text-primary">eco</span>
+              <span className="material-symbols-outlined text-[16px] sm:text-[18px] text-primary">eco</span>
               <span className="text-xs font-semibold text-primary">
                 Khởi đầu lối sống xanh bền vững
               </span>
             </Badge>
 
-            <h1 className="font-heading text-2xl sm:text-2xl lg:text-[40px] font-bold text-on-surface tracking-tight leading-[1.15]">
+            <h1 className="font-heading text-2xl sm:text-3xl lg:text-[40px] font-bold text-on-surface tracking-tight leading-[1.2]">
               Gieo mầm bình yên, mở không gian xanh ngay tại nhà.
             </h1>
 
-            <p className="font-body text-base sm:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            <p className="font-body text-sm sm:text-base lg:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
               Bắt đầu góc xanh của riêng bạn với bộ kit gieo trồng tiện lợi từ Nhà Có Cây. Mỗi bộ kit được chuẩn bị đầy đủ từ hạt giống, viên nén xơ dừa đến hướng dẫn gieo trồng chi tiết, giúp bạn dễ dàng bắt đầu hành trình làm vườn ngay tại nhà. Tự tay gieo những hạt mầm nhỏ, chăm sóc từng chồi non và chờ đón những bông hoa đầu tiên khoe sắc. Bởi đôi khi, niềm vui giản dị nhất chính là được ngắm nhìn những điều nhỏ bé lớn lên mỗi ngày. 🌱
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 w-full sm:w-auto">
               <Button
                 onClick={onExploreKits}
-                className="px-7 py-6 rounded-full bg-primary text-on-primary font-semibold text-sm shadow-xl shadow-primary/20 hover:bg-primary-container transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 sm:px-7 py-3.5 sm:py-6 rounded-full bg-primary text-on-primary font-semibold text-xs sm:text-sm shadow-xl shadow-primary/20 hover:bg-primary-container transition-all flex items-center justify-center gap-2 cursor-pointer h-auto"
               >
                 <span>Khám phá Kit Trồng Cây</span>
-                <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_forward</span>
               </Button>
               <Button
                 variant="outline"
                 onClick={onJoinForum}
-                className="px-6 py-6 rounded-full bg-secondary-container/60 text-primary border border-primary/20 font-semibold text-sm hover:bg-secondary-container transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 sm:py-6 rounded-full bg-secondary-container/60 text-primary border border-primary/20 font-semibold text-xs sm:text-sm hover:bg-secondary-container transition-all flex items-center justify-center gap-2 cursor-pointer h-auto"
               >
-                <span className="material-symbols-outlined text-[20px]">forum</span>
+                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">forum</span>
                 <span>Tham gia Diễn Đàn</span>
               </Button>
             </div>
 
             {/* Micro Trust Indicators */}
-            <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-outline-variant/30 text-on-surface-variant text-xs">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 pt-3 border-t border-outline-variant/30 text-on-surface-variant text-xs">
               <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
+                <span className="material-symbols-outlined text-primary text-[16px] sm:text-[18px]">verified</span>
                 <span>Trọn bộ kit gieo trồng tiện lợi</span>
               </div>
-              <span className="text-outline-variant">•</span>
+              <span className="text-outline-variant hidden sm:inline">•</span>
               <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-primary text-[18px]">local_shipping</span>
+                <span className="material-symbols-outlined text-primary text-[16px] sm:text-[18px]">local_shipping</span>
                 <span>Giao hàng toàn quốc</span>
               </div>
-              <span className="text-outline-variant">•</span>
+              <span className="text-outline-variant hidden sm:inline">•</span>
               <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-primary text-[18px]">support_agent</span>
+                <span className="material-symbols-outlined text-primary text-[16px] sm:text-[18px]">support_agent</span>
                 <span>Bác sĩ cây hỗ trợ 24/7</span>
               </div>
             </div>
           </div>
 
           {/* Right Column: Pure Visual Image Carousel (3 Images) */}
-          <div className="lg:col-span-5 relative">
+          <div className="lg:col-span-5 relative w-full">
             <div className="relative mx-auto max-w-md lg:max-w-none">
               {/* Soft botanical glow backdrop */}
               <div className="absolute inset-0 bg-primary-fixed/30 rounded-3xl blur-2xl transform scale-95" />
@@ -145,17 +145,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   type="button"
                   onClick={handlePrevImage}
                   aria-label="Hình trước"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 size-10 rounded-full bg-black/35 hover:bg-black/65 text-white flex items-center justify-center backdrop-blur-xs opacity-0 group-hover/hero-carousel:opacity-100 transition-all cursor-pointer shadow-md z-20"
+                  className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 size-8 sm:size-10 rounded-full bg-black/40 hover:bg-black/65 text-white flex items-center justify-center backdrop-blur-xs opacity-80 sm:opacity-0 sm:group-hover/hero-carousel:opacity-100 transition-all cursor-pointer shadow-md z-20"
                 >
-                  <span className="material-symbols-outlined text-[24px]">chevron_left</span>
+                  <span className="material-symbols-outlined text-[20px] sm:text-[24px]">chevron_left</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleNextImage}
                   aria-label="Hình sau"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 size-10 rounded-full bg-black/35 hover:bg-black/65 text-white flex items-center justify-center backdrop-blur-xs opacity-0 group-hover/hero-carousel:opacity-100 transition-all cursor-pointer shadow-md z-20"
+                  className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 size-8 sm:size-10 rounded-full bg-black/40 hover:bg-black/65 text-white flex items-center justify-center backdrop-blur-xs opacity-80 sm:opacity-0 sm:group-hover/hero-carousel:opacity-100 transition-all cursor-pointer shadow-md z-20"
                 >
-                  <span className="material-symbols-outlined text-[24px]">chevron_right</span>
+                  <span className="material-symbols-outlined text-[20px] sm:text-[24px]">chevron_right</span>
                 </button>
 
                 {/* Dot Indicators */}

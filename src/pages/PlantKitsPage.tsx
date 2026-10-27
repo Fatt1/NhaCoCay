@@ -93,9 +93,9 @@ export const PlantKitsPage: React.FC<PlantKitsPageProps> = ({
 
   return (
     <div className="bg-surface min-h-screen pb-24">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8 flex flex-col gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-8 flex flex-col gap-6 sm:gap-8">
         {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-xs text-on-surface-variant font-medium select-none">
+        <nav className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-on-surface-variant font-medium select-none">
           <button
             type="button"
             onClick={onBack}
@@ -119,7 +119,7 @@ export const PlantKitsPage: React.FC<PlantKitsPageProps> = ({
         </nav>
 
         {/* Hero Banner (matching user image) */}
-        <div className="relative rounded-3xl p-8 sm:p-10 bg-gradient-to-r from-[#dcf4e7] via-[#eaf8f0] to-[#f3fbf6] border border-[#bfe8d2] shadow-xs overflow-hidden flex flex-col gap-4">
+        <div className="relative rounded-3xl p-5 sm:p-8 md:p-10 bg-gradient-to-r from-[#dcf4e7] via-[#eaf8f0] to-[#f3fbf6] border border-[#bfe8d2] shadow-xs overflow-hidden flex flex-col gap-3.5 sm:gap-4">
           {/* Subtle Decorative Botanical Shape */}
           <div className="absolute right-6 -bottom-6 size-48 opacity-25 pointer-events-none hidden sm:block">
             <svg viewBox="0 0 200 200" fill="none" className="size-full">
@@ -128,28 +128,28 @@ export const PlantKitsPage: React.FC<PlantKitsPageProps> = ({
             </svg>
           </div>
 
-          <div className="flex flex-col gap-2 max-w-2xl z-10">
-            <h1 className="font-heading text-2xl sm:text-2xl font-bold text-on-surface tracking-tight flex items-center gap-2">
+          <div className="flex flex-col gap-1.5 sm:gap-2 max-w-2xl z-10">
+            <h1 className="font-heading text-xl sm:text-2xl font-bold text-on-surface tracking-tight flex items-center gap-2">
               <span>Bộ Kit Trồng Cây Trọn Gói</span>
-              <span className="text-primary text-2xl">🌱</span>
+              <span className="text-primary text-xl sm:text-2xl">🌱</span>
             </h1>
-            <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
+            <p className="font-body text-xs sm:text-sm md:text-base text-on-surface-variant leading-relaxed">
               Tất cả những gì bạn cần để bắt đầu một góc xanh bình yên tại nhà — từ hạt giống, viên nén sơ dừa đến chậu giấy và hướng dẫn chăm sóc cây.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 pt-2 z-10">
-            <span className="px-4 py-1.5 rounded-full bg-[#1b4332] text-white text-xs font-semibold shadow-xs">
+          <div className="flex items-center gap-2 pt-1 sm:pt-2 z-10">
+            <span className="px-3.5 sm:px-4 py-1.5 rounded-full bg-[#1b4332] text-white text-xs font-semibold shadow-xs">
               Tất Cả {products.length > 0 ? `(${products.length})` : ""}
             </span>
           </div>
         </div>
 
         {/* Filter & Search Bar Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pt-1 sm:pt-2">
           <span className="text-xs text-on-surface-variant font-medium">
             Hiển thị <strong className="text-on-surface font-bold">{filteredProducts.length}</strong> trong số{" "}
-            <strong className="text-on-surface font-bold">{products.length}</strong> bộ kit trồng cây trọn gói
+            <strong className="text-on-surface font-bold">{products.length}</strong> bộ kit
           </span>
 
           {/* Search Input with Enter trigger */}
@@ -193,7 +193,7 @@ export const PlantKitsPage: React.FC<PlantKitsPageProps> = ({
 
         {/* Products Grid (Reusing ProductCard) */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 pt-2">
             {[1, 2, 3, 4].map((n) => (
               <Card
                 key={n}
@@ -212,7 +212,7 @@ export const PlantKitsPage: React.FC<PlantKitsPageProps> = ({
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="py-16 bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/30 flex flex-col items-center justify-center text-center gap-3 shadow-xs">
+          <div className="py-16 bg-surface-container-lowest rounded-3xl p-6 sm:p-8 border border-outline-variant/30 flex flex-col items-center justify-center text-center gap-3 shadow-xs">
             <span className="material-symbols-outlined text-5xl text-outline">search_off</span>
             <h3 className="font-heading font-semibold text-base text-on-surface">
               Không tìm thấy bộ kit phù hợp
@@ -232,7 +232,7 @@ export const PlantKitsPage: React.FC<PlantKitsPageProps> = ({
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 pt-2">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

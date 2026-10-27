@@ -162,20 +162,20 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-20">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 pb-16 sm:pb-20">
       {/* Top Breadcrumb / Back */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer w-fit"
         >
           <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           <span>Quay lại giỏ hàng / Mua sắm</span>
         </button>
 
         {!user && (
-          <div className="text-xs text-on-surface-variant flex items-center gap-2">
+          <div className="text-xs text-on-surface-variant flex items-center gap-1.5 sm:gap-2">
             <span>Đã có tài khoản?</span>
             <button
               type="button"
@@ -203,10 +203,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
       </div>
 
       {/* Main Checkout Grid */}
-      <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+      <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10">
         {/* Left Column: Form thông tin khách hàng (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-outline-variant/30 shadow-2xs space-y-5">
+          <div className="bg-surface rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-outline-variant/30 shadow-2xs space-y-5">
             <div className="flex items-center gap-3 pb-3 border-b border-outline-variant/15">
               <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
                 <span className="material-symbols-outlined text-[20px]">local_shipping</span>
@@ -356,7 +356,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
         {/* Right Column: Tóm tắt các sản phẩm sẽ mua (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-surface rounded-3xl p-6 sm:p-7 border border-outline-variant/30 shadow-2xs space-y-5 sticky top-24">
+          <div className="bg-surface rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-7 border border-outline-variant/30 shadow-2xs space-y-5 sticky top-24">
             <div className="flex items-center justify-between pb-3 border-b border-outline-variant/15">
               <h3 className="font-heading font-bold text-base text-on-surface">
                 Tóm Tắt Đơn Hàng ({items.reduce((s, i) => s + i.quantity, 0)})

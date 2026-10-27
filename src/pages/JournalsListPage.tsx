@@ -79,18 +79,18 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-16">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 pb-16">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/15 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/15 pb-5 sm:pb-6">
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
             <span className="w-2 h-2 rounded-full bg-primary" />
             <span>HÀNH TRÌNH MẦM XANH</span>
           </div>
-          <h1 className="text-2xl sm:text-2xl font-bold font-heading text-on-surface tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold font-heading text-on-surface tracking-tight">
             Sổ Tay Nhật Ký Trồng Cây
           </h1>
-          <p className="text-sm text-on-surface-variant max-w-2xl">
+          <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl leading-relaxed">
             Theo dõi hành trình sinh trưởng từng mầm cây, cập nhật trạng thái 6 bước chăm sóc theo
             thiệp cẩm nang giấy kraft của Nhà Có Cây.
           </p>
@@ -99,7 +99,7 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
         <Button
           type="button"
           onClick={handleOpenCreateModal}
-          className="rounded-full bg-primary hover:bg-primary/90 text-on-primary font-semibold px-6 shadow-sm flex items-center gap-2 shrink-0 self-start sm:self-center cursor-pointer"
+          className="w-full sm:w-auto rounded-full bg-primary hover:bg-primary/90 text-on-primary font-semibold px-6 py-2.5 shadow-sm flex items-center justify-center gap-2 shrink-0 cursor-pointer"
         >
           <span className="material-symbols-outlined text-[20px]">add</span>
           <span>Tạo Nhật Ký Cây Mới</span>
@@ -108,7 +108,7 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
 
       {/* Content */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
@@ -117,13 +117,13 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
           ))}
         </div>
       ) : diaries.length === 0 ? (
-        <div className="bg-surface-container-lowest rounded-3xl p-10 sm:p-14 text-center border border-dashed border-outline-variant/40 space-y-4 max-w-xl mx-auto">
+        <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-14 text-center border border-dashed border-outline-variant/40 space-y-4 max-w-xl mx-auto">
           <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-700 mx-auto flex items-center justify-center">
             <span className="material-symbols-outlined text-3xl">nature</span>
           </div>
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-on-surface">Bạn Chưa Có Nhật Ký Cây Nào</h3>
-            <p className="text-sm text-on-surface-variant">
+            <h3 className="text-base sm:text-lg font-bold text-on-surface">Bạn Chưa Có Nhật Ký Cây Nào</h3>
+            <p className="text-xs sm:text-sm text-on-surface-variant">
               Hãy chọn 1 bộ kit trồng cây để bắt đầu hành trình nuôi dưỡng và quan sát mầm xanh lớn
               lên mỗi ngày!
             </p>
@@ -131,13 +131,13 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
           <Button
             type="button"
             onClick={handleOpenCreateModal}
-            className="rounded-full bg-primary text-on-primary font-semibold px-6"
+            className="w-full sm:w-auto rounded-full bg-primary text-on-primary font-semibold px-6"
           >
             Bắt Đầu Gieo Cây Đầu Tiên
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {diaries.map((diary) => {
             const completedCount = diary.handbookSteps.filter(
               (s) => s.status === "completed"

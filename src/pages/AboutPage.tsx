@@ -111,9 +111,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({
         <div className="absolute top-1/3 -left-24 w-80 h-80 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
 
         {/* Main Container */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-6 sm:py-8 lg:py-12">
           {/* 1. Breadcrumb navigation */}
-          <nav aria-label="Đường dẫn trang" className="reveal-on-scroll mb-8 lg:mb-12">
+          <nav aria-label="Đường dẫn trang" className="reveal-on-scroll mb-6 sm:mb-8 lg:mb-12">
             <ol className="flex items-center gap-2 text-xs sm:text-sm font-medium text-on-surface-variant">
               <li>
                 <button
@@ -135,18 +135,18 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           </nav>
 
           {/* 2. Khối Hero Giới Thiệu Thương Hiệu */}
-          <section className="reveal-on-scroll flex flex-col items-center text-center max-w-3xl mx-auto mb-20 lg:mb-28 space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary-container/70 text-on-secondary-container text-xs font-semibold uppercase tracking-wider shadow-sm">
+          <section className="reveal-on-scroll flex flex-col items-center text-center max-w-3xl mx-auto mb-14 sm:mb-20 lg:mb-28 space-y-5 sm:space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-container/70 text-on-secondary-container text-xs font-semibold uppercase tracking-wider shadow-sm">
               <span className="material-symbols-outlined text-[16px]">potted_plant</span>
               <span>CÂU CHUYỆN THƯƠNG HIỆU</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold font-heading text-primary tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-[44px] font-extrabold font-heading text-primary tracking-tight leading-tight">
               Về “Nhà Có Cây”
             </h1>
 
-            <div className="relative px-4 sm:px-6 py-2">
-              <p className="text-base sm:text-lg text-on-surface-variant leading-relaxed text-center font-body">
+            <div className="relative px-2 sm:px-6 py-1 sm:py-2">
+              <p className="text-sm sm:text-base lg:text-lg text-on-surface-variant leading-relaxed text-center font-body">
                 Nhà Có Cây tin rằng niềm vui đôi khi bắt đầu từ những điều thật nhỏ bé — một hạt giống được gieo xuống,
                 một mầm xanh vừa nhú lên hay một bông hoa đầu tiên khoe sắc. Thông qua những bộ kit gieo hạt tiện lợi
                 và cộng đồng những người yêu cây, Nhà Có Cây mong muốn giúp việc gieo trồng trở nên đơn giản, dễ dàng hơn,
@@ -154,24 +154,24 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               </p>
             </div>
 
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
-              <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-surface-container-low text-primary text-sm font-semibold border border-outline-variant/20 shadow-xs">
-                <span className="material-symbols-outlined text-[20px] text-secondary">spa</span>
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4">
+              <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-container-low text-primary text-xs sm:text-sm font-semibold border border-outline-variant/20 shadow-xs">
+                <span className="material-symbols-outlined text-[18px] sm:text-[20px] text-secondary">spa</span>
                 <span>Mộc mạc &amp; Thuần tự nhiên</span>
               </div>
-              <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-surface-container-low text-primary text-sm font-semibold border border-outline-variant/20 shadow-xs">
-                <span className="material-symbols-outlined text-[20px] text-secondary">energy_savings_leaf</span>
+              <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-container-low text-primary text-xs sm:text-sm font-semibold border border-outline-variant/20 shadow-xs">
+                <span className="material-symbols-outlined text-[18px] sm:text-[20px] text-secondary">energy_savings_leaf</span>
                 <span>Lối sống xanh chữa lành</span>
               </div>
             </div>
           </section>
 
           {/* 3. Khối Tầm Nhìn & Sứ Mệnh (Grid 2 cột thanh lịch) */}
-          <section className="mb-20 lg:mb-28">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          <section className="mb-14 sm:mb-20 lg:mb-28">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
               {/* Cột 1: TẦM NHÌN */}
               <div
-                className="reveal-on-scroll group relative p-8 lg:p-10 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden border border-outline-variant/30"
+                className="reveal-on-scroll group relative p-5 sm:p-8 lg:p-10 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden border border-outline-variant/30"
                 style={{ transitionDelay: "80ms" }}
               >
                 <div className="absolute top-0 right-0 w-36 h-36 bg-secondary-container/30 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110 duration-500" />
@@ -182,21 +182,21 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                   <span className="text-xs uppercase tracking-wider text-secondary font-semibold block mb-2">
                     Định Hướng Tương Lai
                   </span>
-                  <h2 className="text-2xl lg:text-3xl font-bold font-heading text-primary mb-4 tracking-tight">
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold font-heading text-primary mb-3 sm:mb-4 tracking-tight">
                     TẦM NHÌN
                   </h2>
-                  <p className="text-base lg:text-lg text-on-surface-variant leading-relaxed font-body">
+                  <p className="text-sm sm:text-base lg:text-lg text-on-surface-variant leading-relaxed font-body">
                     Trở thành thương hiệu bộ kit trồng cây tại nhà được yêu thích hàng đầu Việt Nam, giúp mọi người gần gũi với thiên nhiên và lan tỏa lối sống xanh.
                   </p>
                 </div>
-                <div className="mt-8 pt-6 flex items-center gap-2 text-primary text-xs font-semibold">
+                <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 flex items-center gap-2 text-primary text-xs font-semibold">
                   <span className="w-10 h-[2.5px] bg-primary rounded-full" />
                 </div>
               </div>
 
               {/* Cột 2: SỨ MỆNH */}
               <div
-                className="reveal-on-scroll group relative p-8 lg:p-10 rounded-2xl text-white shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden bg-[#14422d] border border-[#1e543b]"
+                className="reveal-on-scroll group relative p-5 sm:p-8 lg:p-10 rounded-2xl text-white shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden bg-[#14422d] border border-[#1e543b]"
                 style={{ transitionDelay: "220ms" }}
               >
                 <div className="absolute top-0 right-0 w-36 h-36 bg-emerald-500/15 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110 duration-500" />
@@ -207,14 +207,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                   <span className="text-xs uppercase tracking-wider text-emerald-200 font-semibold block mb-2">
                     Trách Nhiệm &amp; Hành Động
                   </span>
-                  <h2 className="text-2xl lg:text-3xl font-bold font-heading text-white mb-4 tracking-tight">
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold font-heading text-white mb-3 sm:mb-4 tracking-tight">
                     SỨ MỆNH
                   </h2>
-                  <p className="text-base lg:text-lg text-emerald-50/90 leading-relaxed font-body">
+                  <p className="text-sm sm:text-base lg:text-lg text-emerald-50/90 leading-relaxed font-body">
                     Mang đến những bộ kit gieo hạt tiện lợi, giúp mọi người dễ dàng bắt đầu trồng và chăm sóc cây xanh tại nhà.
                   </p>
                 </div>
-                <div className="mt-8 pt-6 flex items-center gap-2 text-emerald-300 text-xs font-semibold">
+                <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 flex items-center gap-2 text-emerald-300 text-xs font-semibold">
                   <span className="w-10 h-[2.5px] bg-secondary-container rounded-full" />
                 </div>
               </div>
@@ -270,21 +270,21 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           </section>
 
           {/* 5. Khối Thông Tin Liên Hệ */}
-          <section className="mb-16">
-            <div className="rounded-3xl bg-surface-container-low p-8 lg:p-12 shadow-sm border border-outline-variant/30">
-              <div className="reveal-on-scroll max-w-3xl mb-10">
+          <section className="mb-12 sm:mb-16">
+            <div className="rounded-2xl sm:rounded-3xl bg-surface-container-low p-5 sm:p-8 lg:p-12 shadow-sm border border-outline-variant/30">
+              <div className="reveal-on-scroll max-w-3xl mb-8 sm:mb-10">
                 <span className="text-xs uppercase tracking-wider text-secondary font-semibold block mb-2">
                   Đồng Hành Cùng Chúng Tôi
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-primary tracking-tight mb-3">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold font-heading text-primary tracking-tight mb-2 sm:mb-3">
                   Thông Tin Liên Hệ
                 </h2>
-                <p className="text-sm sm:text-base text-on-surface-variant font-body">
+                <p className="text-xs sm:text-sm lg:text-base text-on-surface-variant font-body">
                   Chúng tôi luôn sẵn sàng lắng nghe, tư vấn và đồng hành cùng bạn trên từng chặng đường gieo mầm xanh.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {/* Điện thoại */}
                 <div
                   className="reveal-on-scroll p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/20 flex flex-col justify-between hover:shadow-md transition-shadow"
@@ -409,23 +409,23 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           </section>
 
           {/* Action CTA: Khám phá sản phẩm */}
-          <section className="reveal-scale mb-8 text-center bg-gradient-to-r from-emerald-900 to-[#14422d] text-white p-8 sm:p-12 rounded-3xl relative overflow-hidden shadow-lg">
+          <section className="reveal-scale mb-8 text-center bg-gradient-to-r from-emerald-900 to-[#14422d] text-white p-6 sm:p-10 lg:p-12 rounded-2xl sm:rounded-3xl relative overflow-hidden shadow-lg">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
             <div className="relative z-10 max-w-2xl mx-auto space-y-4">
               <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-emerald-200 text-xs font-semibold uppercase tracking-wider">
                 Gieo Mầm Cùng Chúng Tôi
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold font-heading">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold font-heading">
                 Bạn Đã Sẵn Sàng Vun Trồng Góc Xanh Của Mình?
               </h2>
-              <p className="text-sm sm:text-base text-emerald-100/90 font-body">
+              <p className="text-xs sm:text-sm lg:text-base text-emerald-100/90 font-body">
                 Khám phá ngay các bộ kit trồng cây tiện lợi và thân thiện môi trường từ Nhà Có Cây
               </p>
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={handleExploreClick}
-                  className="px-6 py-3 rounded-full bg-white text-[#14422d] font-bold text-sm hover:bg-emerald-50 transition-all shadow-md hover:shadow-lg cursor-pointer inline-flex items-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3 rounded-full bg-white text-[#14422d] font-bold text-sm hover:bg-emerald-50 transition-all shadow-md hover:shadow-lg cursor-pointer inline-flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined text-[20px]">shopping_bag</span>
                   <span>Khám phá bộ kit trồng cây</span>

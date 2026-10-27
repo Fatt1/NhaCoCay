@@ -95,9 +95,9 @@ export const ForumPage: React.FC<ForumPageProps> = ({
 
   return (
     <div className="bg-surface min-h-screen pb-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col gap-6 sm:gap-8">
         {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-xs text-on-surface-variant font-medium select-none">
+        <nav className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-on-surface-variant font-medium select-none">
           <button
             type="button"
             onClick={onBack}
@@ -111,17 +111,17 @@ export const ForumPage: React.FC<ForumPageProps> = ({
         </nav>
 
         {/* Forum Header Banner (matching Image 1) */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-2">
-          <div className="flex flex-col gap-2 max-w-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 sm:gap-6 pb-2">
+          <div className="flex flex-col gap-1.5 sm:gap-2 max-w-2xl">
             <div className="inline-block self-start">
               <span className="px-3.5 py-1 rounded-full bg-[#1b4332]/10 text-primary text-[11px] font-bold uppercase tracking-wider">
                 🌱 CỘNG ĐỒNG NHÀ CÓ CÂY
               </span>
             </div>
-            <h1 className="font-heading text-2xl sm:text-2xl font-bold text-on-surface tracking-tight leading-tight">
+            <h1 className="font-heading text-xl sm:text-2xl font-bold text-on-surface tracking-tight leading-tight">
               Cộng Đồng Gieo Mầm &amp; Chia Sẻ Góc Xanh
             </h1>
-            <p className="font-body text-sm text-on-surface-variant leading-relaxed">
+            <p className="font-body text-xs sm:text-sm text-on-surface-variant leading-relaxed">
               Nơi giao lưu, hỏi đáp kỹ thuật gieo hạt, khoe những chậu mầm xinh và lan tỏa năng lượng
               bình yên cùng đất lá.
             </p>
@@ -129,7 +129,7 @@ export const ForumPage: React.FC<ForumPageProps> = ({
 
           <Button
             onClick={handleQuickPostClick}
-            className="px-4 py-2 rounded-full bg-[#1b4332] hover:bg-[#112d20] text-white text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0 h-auto"
+            className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-[#1b4332] hover:bg-[#112d20] text-white text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0 h-auto"
           >
             <span className="material-symbols-outlined text-[15px]">
               {user ? "add_circle" : "lock"}
@@ -139,9 +139,9 @@ export const ForumPage: React.FC<ForumPageProps> = ({
         </div>
 
         {/* Quick Post Box (matching Image 1) */}
-        <Card className="bg-surface-container-lowest rounded-3xl p-5 sm:p-6 shadow-sm border border-outline-variant/30 flex flex-col gap-3.5">
-          <div className="flex items-center gap-3">
-            <Avatar className="size-10 shrink-0">
+        <Card className="bg-surface-container-lowest rounded-3xl p-4 sm:p-6 shadow-sm border border-outline-variant/30 flex flex-col gap-3.5">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <Avatar className="size-9 sm:size-10 shrink-0">
               <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
                 {user ? (
                   getInitial(user.fullName || "Bạn")
@@ -154,7 +154,7 @@ export const ForumPage: React.FC<ForumPageProps> = ({
             <button
               type="button"
               onClick={handleQuickPostClick}
-              className="flex-1 bg-surface-container-low hover:bg-surface-container text-left px-5 py-3 rounded-full text-xs sm:text-sm text-outline hover:text-on-surface-variant transition-colors cursor-pointer border border-outline-variant/20 truncate"
+              className="flex-1 bg-surface-container-low hover:bg-surface-container text-left px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm text-outline hover:text-on-surface-variant transition-colors cursor-pointer border border-outline-variant/20 truncate"
             >
               {user
                 ? "Bạn đang trồng cây gì hôm nay? Chia sẻ khoảnh khắc với cộng đồng..."
@@ -166,9 +166,9 @@ export const ForumPage: React.FC<ForumPageProps> = ({
             <button
               type="button"
               onClick={handleQuickPostClick}
-              className="flex items-center gap-2 text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer px-2 py-1 rounded-lg"
+              className="flex items-center gap-1.5 sm:gap-2 text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer px-2 py-1 rounded-lg"
             >
-              <span className="material-symbols-outlined text-primary text-[20px]">image</span>
+              <span className="material-symbols-outlined text-primary text-[18px] sm:text-[20px]">image</span>
               <span>Ảnh / Video</span>
             </button>
 
@@ -186,14 +186,15 @@ export const ForumPage: React.FC<ForumPageProps> = ({
         </Card>
 
         {/* Feed Tab Selector (Tất cả & Bài viết của tôi) */}
-        <div className="flex items-center gap-3 border-b border-outline-variant/20 pb-2">
+        <div className="flex items-center gap-2 sm:gap-3 border-b border-outline-variant/20 pb-2 overflow-x-auto no-scrollbar">
           <button
             type="button"
             onClick={() => setActiveFeedTab("all")}
-            className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${activeFeedTab === "all"
-              ? "bg-[#183d2c] text-white shadow-sm"
-              : "bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
-              }`}
+            className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeFeedTab === "all"
+                ? "bg-[#183d2c] text-white shadow-sm"
+                : "bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+            }`}
           >
             Tất cả thảo luận ({posts.length})
           </button>
@@ -208,12 +209,13 @@ export const ForumPage: React.FC<ForumPageProps> = ({
               }
               setActiveFeedTab("my_posts")
             }}
-            className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${activeFeedTab === "my_posts"
-              ? "bg-[#183d2c] text-white shadow-sm"
-              : "bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
-              }`}
+            className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+              activeFeedTab === "my_posts"
+                ? "bg-[#183d2c] text-white shadow-sm"
+                : "bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+            }`}
           >
-            <span className="material-symbols-outlined text-[18px]">person</span>
+            <span className="material-symbols-outlined text-[16px]">person</span>
             <span>Bài viết của tôi ({myPosts.length})</span>
           </button>
         </div>
