@@ -206,3 +206,97 @@ export const getPostComments = async (postId: string): Promise<PostComment[]> =>
     return []
   }
 }
+
+/**
+ * Thả tim / Bỏ thích bình luận bài viết
+ */
+export const toggleLikeComment = async (
+  postId: string,
+  commentId: string,
+  userId: string
+): Promise<{ likesCount: number; isLiked: boolean }> => {
+  const commentRef = doc(db, POSTS_COLLECTION, postId, "comments", commentId)
+  const commentSnap = await getDoc(commentRef)
+
+  if (!commentSnap.exists()) {
+    throw new Error("Không tìm thấy bình luận")
+  }
+
+  const commentData = commentSnap.data() as PostComment
+  const likedUserIds = Array.isArray(commentData.likedUserIds) ? [...commentData.likedUserIds] : []
+  const hasLiked = likedUserIds.includes(userId)
+
+  let updatedLikedUserIds: string[]
+  let newLikesCount = commentData.likesCount || 0
+
+  if (hasLiked) {
+    updatedLikedUserIds = likedUserIds.filter((id) => id !== userId)
+    newLikesCount = Math.max(0, newLikesCount - 1)
+  } else {
+    updatedLikedUserIds = [...likedUserIds, userId]
+    newLikesCount += 1
+  }
+
+  await updateDoc(commentRef, {
+    likesCount: newLikesCount,
+    likedUserIds: updatedLikedUserIds,
+  })
+
+  return {
+    likesCount: newLikesCount,
+    isLiked: !hasLiked,
+  }
+}
+
+/**
+ * Chỉnh sửa nội dung bình luận
+ */
+export const updateComment = async (
+  postId: string,
+  commentId: string,
+  newContent: string
+): Promise<void> => {
+  const commentRef = doc(db, POSTS_COLLECTION, postId, "comments", commentId)
+  await updateDoc(commentRef, {
+    content: newContent,
+    isEdited: true,
+    updatedAt: new Date().toISOString(),
+  })
+}
+
+/**
+ * Xóa bình luận bài viết (và các câu trả lời con nếu có)
+ */
+export const deleteComment = async (
+  postId: string,
+  commentId: string
+): Promise<void> => {
+  const commentRef = doc(db, POSTS_COLLECTION, postId, "comments", commentId)
+
+  try {
+    const commentsCollectionRef = collection(db, POSTS_COLLECTION, postId, "comments")
+    const q = query(commentsCollectionRef, where("parentId", "==", commentId))
+    const childReplies = await getDocs(q)
+
+    // Xóa các câu trả lời con
+    const deletePromises = childReplies.docs.map((docSnap) => deleteDoc(docSnap.ref))
+    await Promise.all(deletePromises)
+
+    // Xóa comment chính
+    await deleteDoc(commentRef)
+
+    // Giảm số lượng comment của bài viết
+    const totalDeleted = 1 + childReplies.docs.length
+    const postDocRef = doc(db, POSTS_COLLECTION, postId)
+    await updateDoc(postDocRef, { commentsCount: increment(-totalDeleted) })
+  } catch (err) {
+    await deleteDoc(commentRef)
+    try {
+      const postDocRef = doc(db, POSTS_COLLECTION, postId)
+      await updateDoc(postDocRef, { commentsCount: increment(-1) })
+    } catch (e) {
+      console.warn("Could not decrement commentsCount:", e)
+    }
+  }
+}
+

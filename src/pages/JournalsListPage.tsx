@@ -5,6 +5,16 @@ import type { PlantDiary } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { CreateDiaryModal } from "@/components/diary/CreateDiaryModal"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface JournalsListPageProps {
   onSelectDiary: (diaryId: string) => void
@@ -21,7 +31,8 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
   const [diaries, setDiaries] = useState<PlantDiary[]>([])
   const [loading, setLoading] = useState(true)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [diaryToDelete, setDiaryToDelete] = useState<PlantDiary | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const loadDiaries = async () => {
     if (!user) {
@@ -44,23 +55,25 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
     loadDiaries()
   }, [user])
 
-  const handleDelete = async (e: React.MouseEvent, diary: PlantDiary) => {
+  const handleRequestDelete = (e: React.MouseEvent, diary: PlantDiary) => {
     e.stopPropagation()
-    const confirmed = window.confirm(
-      `Bạn có chắc chắn muốn xóa sổ tay nhật ký "${diary.plantName}" không?`
-    )
-    if (!confirmed) return
+    setDiaryToDelete(diary)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!diaryToDelete) return
 
     try {
-      setDeletingId(diary.id)
-      await deleteDiary(diary.id)
+      setIsDeleting(true)
+      await deleteDiary(diaryToDelete.id)
       onNotify?.("Đã xóa nhật ký trồng cây!", "delete")
-      setDiaries((prev) => prev.filter((d) => d.id !== diary.id))
+      setDiaries((prev) => prev.filter((d) => d.id !== diaryToDelete.id))
+      setDiaryToDelete(null)
     } catch (err) {
       console.error(err)
       onNotify?.("Có lỗi xảy ra khi xóa nhật ký", "error")
     } finally {
-      setDeletingId(null)
+      setIsDeleting(false)
     }
   }
 
@@ -173,12 +186,12 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
                     <button
                       type="button"
                       title="Xóa nhật ký này"
-                      disabled={deletingId === diary.id}
-                      onClick={(e) => handleDelete(e, diary)}
+                      disabled={isDeleting && diaryToDelete?.id === diary.id}
+                      onClick={(e) => handleRequestDelete(e, diary)}
                       className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-rose-600 hover:bg-rose-50 flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[16px]">
-                        {deletingId === diary.id ? "hourglass_empty" : "delete"}
+                        delete
                       </span>
                     </button>
                   </div>
@@ -234,6 +247,45 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
         onSuccess={handleCreatedSuccess}
         onNotify={onNotify}
       />
+
+      {/* Shadcn AlertDialog Xác nhận xóa nhật ký */}
+      <AlertDialog
+        open={!!diaryToDelete}
+        onOpenChange={(open) => {
+          if (!open && !isDeleting) setDiaryToDelete(null)
+        }}
+      >
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-rose-600">
+              <span className="material-symbols-outlined text-2xl">warning</span>
+              Xác nhận xóa nhật ký
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn xóa sổ tay nhật ký{" "}
+              <span className="font-semibold text-on-surface">
+                &ldquo;{diaryToDelete?.plantName}&rdquo;
+              </span>{" "}
+              không? Toàn bộ tiến trình chăm sóc và hình ảnh đã lưu sẽ bị xóa vĩnh viễn và không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={isDeleting}
+              onClick={() => setDiaryToDelete(null)}
+            >
+              Hủy bỏ
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isDeleting}
+              onClick={handleConfirmDelete}
+              className="bg-rose-600 hover:bg-rose-700 text-white"
+            >
+              {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

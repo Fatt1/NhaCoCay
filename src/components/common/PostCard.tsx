@@ -1,6 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react"
 import { createPortal } from "react-dom"
-import { toggleLikePost, getPostComments, addComment } from "@/services"
+import {
+  toggleLikePost,
+  getPostComments,
+  addComment,
+  toggleLikeComment,
+  updateComment,
+  deleteComment,
+} from "@/services"
 import { useAuthStore } from "@/stores"
 import type { DiaryPost, PostComment } from "@/types"
 import { Card, CardContent } from "@/components/ui/card"
@@ -9,6 +16,22 @@ import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export interface PostCardProps {
   post: DiaryPost
@@ -71,6 +94,12 @@ export const PostCard: React.FC<PostCardProps> = ({
   const { user } = useAuthStore()
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(post.likesCount || 0)
+  const [commentsCount, setCommentsCount] = useState(post.commentsCount || 0)
+  const [commentToDelete, setCommentToDelete] = useState<{
+    id: string
+    parentId?: string | null
+    isReply?: boolean
+  } | null>(null)
   const [comments, setComments] = useState<PostComment[]>([])
   const [loadingComments, setLoadingComments] = useState(false)
   const [showComments, setShowComments] = useState(showCommentsByDefault)
@@ -83,6 +112,10 @@ export const PostCard: React.FC<PostCardProps> = ({
     userId?: string
   } | null>(null)
   const [replyInput, setReplyInput] = useState("")
+
+  // State chỉnh sửa bình luận / câu trả lời
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
+  const [editingContent, setEditingContent] = useState("")
 
   // Danh sách hình ảnh bài viết (loại bỏ link rỗng)
   const imagesList = useMemo(() => {
@@ -141,6 +174,11 @@ export const PostCard: React.FC<PostCardProps> = ({
       .then((data) => {
         if (isMounted) {
           setComments(data)
+          const totalCount = data.reduce(
+            (sum, c) => sum + 1 + (c.replies ? c.replies.length : 0),
+            0
+          )
+          setCommentsCount(totalCount)
           setLoadingComments(false)
         }
       })
@@ -190,6 +228,7 @@ export const PostCard: React.FC<PostCardProps> = ({
       })
 
       setComments((prev) => [...prev, newCmt])
+      setCommentsCount((prev) => prev + 1)
       setMainCommentInput("")
       setShowComments(true)
       onNotify?.("Đã gửi bình luận!", "forum")
@@ -205,6 +244,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         createdAt: new Date().toISOString(),
       }
       setComments((prev) => [...prev, fallbackCmt])
+      setCommentsCount((prev) => prev + 1)
       setMainCommentInput("")
       setShowComments(true)
       onNotify?.("Đã gửi bình luận!", "forum")
@@ -239,6 +279,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             : c
         )
       )
+      setCommentsCount((prev) => prev + 1)
 
       setReplyInput("")
       setReplyTarget(null)
@@ -266,6 +307,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             : c
         )
       )
+      setCommentsCount((prev) => prev + 1)
       setReplyInput("")
       setReplyTarget(null)
       setShowComments(true)
@@ -276,9 +318,166 @@ export const PostCard: React.FC<PostCardProps> = ({
     }
   }
 
+  // Thả tim / Bỏ thích bình luận hoặc câu trả lời
+  const handleToggleLikeComment = async (commentId: string, _parentId?: string | null) => {
+    if (!user) {
+      onNotify?.("Vui lòng đăng nhập để thích bình luận!", "lock")
+      return
+    }
 
-  const totalCommentsCount =
-    post.commentsCount > comments.length ? post.commentsCount : comments.length
+    // Cập nhật optimistic giao diện ngay lập tức
+    setComments((prev) => {
+      const updateList = (list: PostComment[]): PostComment[] => {
+        return list.map((c) => {
+          if (c.id === commentId) {
+            const likedList = Array.isArray(c.likedUserIds) ? [...c.likedUserIds] : []
+            const hasLiked = likedList.includes(user.uid)
+            const nextLiked = hasLiked
+              ? likedList.filter((id) => id !== user.uid)
+              : [...likedList, user.uid]
+            const nextCount = hasLiked
+              ? Math.max(0, (c.likesCount || 0) - 1)
+              : (c.likesCount || 0) + 1
+
+            return {
+              ...c,
+              likedUserIds: nextLiked,
+              likesCount: nextCount,
+            }
+          }
+          if (c.replies && c.replies.length > 0) {
+            return { ...c, replies: updateList(c.replies) }
+          }
+          return c
+        })
+      }
+      return updateList(prev)
+    })
+
+    try {
+      await toggleLikeComment(post.id, commentId, user.uid)
+    } catch (err) {
+      console.warn("Could not sync like comment to Firestore:", err)
+    }
+  }
+
+  // Bắt đầu trả lời một bình luận hoặc một câu trả lời cụ thể
+  const handleStartReply = (parentId: string, authorName: string, userId?: string) => {
+    if (replyTarget?.parentId === parentId && replyTarget.authorName === authorName) {
+      setReplyTarget(null)
+    } else {
+      setReplyTarget({
+        parentId,
+        authorName,
+        userId,
+      })
+      // Tự động mở danh sách bình luận con để tiện theo dõi
+      setExpandedReplies((prev) => ({ ...prev, [parentId]: true }))
+    }
+  }
+
+  // Bắt đầu chỉnh sửa bình luận
+  const handleStartEdit = (cmt: PostComment) => {
+    setEditingCommentId(cmt.id)
+    setEditingContent(cmt.content)
+  }
+
+  // Hủy chỉnh sửa bình luận
+  const handleCancelEdit = () => {
+    setEditingCommentId(null)
+    setEditingContent("")
+  }
+
+  // Lưu nội dung chỉnh sửa bình luận
+  const handleSaveEdit = async (commentId: string, _parentId?: string | null) => {
+    const text = editingContent.trim()
+    if (!text) return
+
+    const nowIso = new Date().toISOString()
+    setComments((prev) => {
+      const updateList = (list: PostComment[]): PostComment[] => {
+        return list.map((c) => {
+          if (c.id === commentId) {
+            return {
+              ...c,
+              content: text,
+              isEdited: true,
+              updatedAt: nowIso,
+            }
+          }
+          if (c.replies && c.replies.length > 0) {
+            return { ...c, replies: updateList(c.replies) }
+          }
+          return c
+        })
+      }
+      return updateList(prev)
+    })
+
+    setEditingCommentId(null)
+    setEditingContent("")
+    onNotify?.("Đã cập nhật bình luận!", "check_circle")
+
+    try {
+      await updateComment(post.id, commentId, text)
+    } catch (err) {
+      console.warn("Could not sync comment update to Firestore:", err)
+    }
+  }
+
+  // Bật modal xác nhận xóa bình luận hoặc câu trả lời bằng AlertDialog của shadcn
+  const handleDeleteComment = (commentId: string, parentId?: string | null, isReply = false) => {
+    setCommentToDelete({
+      id: commentId,
+      parentId,
+      isReply: !!parentId || isReply,
+    })
+  }
+
+  // Thực hiện xóa bình luận khi người dùng xác nhận trong AlertDialog
+  const handleConfirmDeleteComment = async () => {
+    if (!commentToDelete) return
+    const { id: commentId, parentId, isReply } = commentToDelete
+
+    // Tính toán số lượng bình luận bị trừ (nếu là comment gốc thì trừ cả các replies con)
+    let countToDelete = 1
+    if (!parentId && !isReply) {
+      const targetCmt = comments.find((c) => c.id === commentId)
+      if (targetCmt && targetCmt.replies) {
+        countToDelete += targetCmt.replies.length
+      }
+    }
+
+    // Cập nhật giao diện ngay lập tức (optimistic)
+    setCommentsCount((prev) => Math.max(0, prev - countToDelete))
+    setComments((prev) => {
+      if (!parentId) {
+        return prev.filter((c) => c.id !== commentId)
+      }
+      return prev.map((c) => {
+        if (c.id === parentId) {
+          const filteredReplies = (c.replies || []).filter((r) => r.id !== commentId)
+          return {
+            ...c,
+            replies: filteredReplies,
+            repliesCount: Math.max(0, (c.repliesCount || 1) - 1),
+          }
+        }
+        return c
+      })
+    })
+
+    setCommentToDelete(null)
+    onNotify?.("Đã xóa bình luận thành công!", "delete")
+
+    try {
+      await deleteComment(post.id, commentId)
+    } catch (err) {
+      console.warn("Could not sync delete comment to Firestore:", err)
+    }
+  }
+
+  const totalCommentsCount = Math.max(0, commentsCount)
 
   return (
     <>
@@ -660,45 +859,152 @@ export const PostCard: React.FC<PostCardProps> = ({
                           </AvatarFallback>
                         </Avatar>
 
-                        <div className="flex flex-col flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-xs text-on-surface">
-                              {cmt.authorName}
-                            </span>
-                            <span className="text-[11px] text-on-surface-variant">
-                              {formatTimeAgo(cmt.createdAt)}
-                            </span>
+                        <div className="flex flex-col flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-xs text-on-surface">
+                                {cmt.authorName}
+                              </span>
+                              {cmt.userId === post.userId && (
+                                <Badge className="bg-[#1b4332] text-white text-[10px] px-1.5 py-0 rounded-full font-medium border-none shadow-none">
+                                  Tác giả
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                              <span className="text-[11px] text-on-surface-variant">
+                                {formatTimeAgo(cmt.createdAt)}
+                              </span>
+                              {user && (user.uid === cmt.userId || user.role === "admin") && (
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <button
+                                      type="button"
+                                      className="p-1 rounded-full text-on-surface-variant/70 hover:text-on-surface hover:bg-neutral-200/60 transition-colors cursor-pointer outline-none shrink-0 flex items-center justify-center"
+                                      title="Tùy chọn bình luận"
+                                    >
+                                      <span className="material-symbols-outlined text-[18px] leading-none">
+                                        more_horiz
+                                      </span>
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end" className="w-36 bg-white border border-neutral-200 shadow-md rounded-xl p-1">
+                                    {user.uid === cmt.userId && (
+                                      <DropdownMenuItem
+                                        onClick={() => handleStartEdit(cmt)}
+                                        className="flex items-center gap-2 text-xs font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 rounded-lg px-2.5 py-1.5 cursor-pointer"
+                                      >
+                                        <span className="material-symbols-outlined text-[16px]">edit</span>
+                                        <span>Chỉnh sửa</span>
+                                      </DropdownMenuItem>
+                                    )}
+                                    <DropdownMenuItem
+                                      onClick={() => handleDeleteComment(cmt.id, cmt.parentId, false)}
+                                      className="flex items-center gap-2 text-xs font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 rounded-lg px-2.5 py-1.5 cursor-pointer"
+                                    >
+                                      <span className="material-symbols-outlined text-[16px]">delete</span>
+                                      <span>Xóa</span>
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              )}
+                            </div>
                           </div>
-                          <p className="text-xs text-on-surface leading-relaxed mt-0.5">
-                            {cmt.content}
-                          </p>
 
-                          <div className="flex items-center gap-4 mt-1.5">
+                          {/* Content or Inline Edit Box */}
+                          {editingCommentId === cmt.id ? (
+                            <div className="flex flex-col gap-2 mt-1.5">
+                              <input
+                                type="text"
+                                autoFocus
+                                value={editingContent}
+                                onChange={(e) => setEditingContent(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") handleSaveEdit(cmt.id, cmt.parentId)
+                                  if (e.key === "Escape") handleCancelEdit()
+                                }}
+                                className="w-full text-xs bg-surface-container-lowest border border-primary/50 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 text-on-surface shadow-xs"
+                                placeholder="Chỉnh sửa bình luận của bạn..."
+                              />
+                              <div className="flex items-center gap-2 justify-end">
+                                <button
+                                  type="button"
+                                  onClick={handleCancelEdit}
+                                  className="text-[11px] font-semibold text-on-surface-variant hover:text-on-surface px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+                                >
+                                  Hủy
+                                </button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleSaveEdit(cmt.id, cmt.parentId)}
+                                  className="h-7 text-[11px] px-3 rounded-lg bg-primary text-on-primary hover:bg-primary-container font-semibold cursor-pointer"
+                                >
+                                  Lưu thay đổi
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-on-surface leading-relaxed mt-0.5 whitespace-pre-wrap">
+                              {cmt.content}
+                            </p>
+                          )}
+
+                          {/* Action Row: Thumbs-up icon, Reply, Edited, Like count badge, Edit/Delete */}
+                          <div className="flex items-center gap-3.5 mt-2 flex-wrap">
+                            {/* Like Icon Button */}
+                            {(() => {
+                              const isLikedByMe =
+                                !!user &&
+                                Array.isArray(cmt.likedUserIds) &&
+                                cmt.likedUserIds.includes(user.uid)
+                              return (
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleLikeComment(cmt.id, cmt.parentId)}
+                                  className={`inline-flex items-center justify-center transition-transform active:scale-90 cursor-pointer p-0.5 ${
+                                    isLikedByMe
+                                      ? "text-blue-600 font-bold"
+                                      : "text-on-surface-variant hover:text-blue-600"
+                                  }`}
+                                  title={isLikedByMe ? "Bỏ thích" : "Thích"}
+                                >
+                                  <span
+                                    className="material-symbols-outlined text-[17px]"
+                                    style={isLikedByMe ? { fontVariationSettings: "'FILL' 1" } : {}}
+                                  >
+                                    thumb_up
+                                  </span>
+                                </button>
+                              )
+                            })()}
+
+                            {/* Reply Button */}
                             <button
                               type="button"
-                              className="text-[11px] font-semibold text-on-surface-variant hover:text-error transition-colors cursor-pointer"
-                            >
-                              Thích {cmt.likesCount > 0 ? `(${cmt.likesCount})` : ""}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (replyTarget?.parentId === cmt.id) {
-                                  setReplyTarget(null)
-                                } else {
-                                  setReplyTarget({
-                                    parentId: cmt.id,
-                                    authorName: cmt.authorName,
-                                    userId: cmt.userId,
-                                  })
-                                  // Tự động mở danh sách bình luận con để tiện theo dõi
-                                  setExpandedReplies((prev) => ({ ...prev, [cmt.id]: true }))
-                                }
-                              }}
-                              className="text-[11px] font-semibold text-primary hover:underline transition-colors cursor-pointer"
+                              onClick={() => handleStartReply(cmt.id, cmt.authorName, cmt.userId)}
+                              className="text-[11px] font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
                             >
                               Trả lời
                             </button>
+
+                            {/* Edited status */}
+                            {cmt.isEdited && (
+                              <span className="text-[10px] text-on-surface-variant/70 italic select-none">
+                                Đã chỉnh sửa
+                              </span>
+                            )}
+
+                            {/* Round Blue Like Badge (Image 2 style) */}
+                            {cmt.likesCount > 0 && (
+                              <span className="inline-flex items-center gap-1.5 select-none">
+                                <span className="w-4 h-4 rounded-full bg-[#1877F2] text-white flex items-center justify-center shadow-xs shrink-0">
+                                  <svg className="w-2.5 h-2.5 fill-white" viewBox="0 0 24 24">
+                                    <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
+                                  </svg>
+                                </span>
+                                <span className="text-xs font-semibold text-slate-700">{cmt.likesCount}</span>
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -729,6 +1035,11 @@ export const PostCard: React.FC<PostCardProps> = ({
                                 const isPostAuthor =
                                   reply.userId === post.userId ||
                                   reply.authorName === post.authorName
+                                const isReplyLikedByMe =
+                                  !!user &&
+                                  Array.isArray(reply.likedUserIds) &&
+                                  reply.likedUserIds.includes(user.uid)
+
                                 return (
                                   <div
                                     key={reply.id}
@@ -744,20 +1055,145 @@ export const PostCard: React.FC<PostCardProps> = ({
                                       </AvatarFallback>
                                     </Avatar>
 
-                                    <div className="flex flex-col flex-1">
-                                      <div className="flex items-center gap-2">
-                                        <span className="font-bold text-xs text-on-surface">
-                                          {reply.authorName}
-                                        </span>
-                                        {isPostAuthor && (
-                                          <Badge className="bg-[#1b4332] text-white text-[10px] px-1.5 py-0 rounded-full font-medium border-none shadow-none">
-                                            Tác giả
-                                          </Badge>
+                                    <div className="flex flex-col flex-1 min-w-0">
+                                      <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2">
+                                          <span className="font-bold text-xs text-on-surface">
+                                            {reply.authorName}
+                                          </span>
+                                          {isPostAuthor && (
+                                            <Badge className="bg-[#1b4332] text-white text-[10px] px-1.5 py-0 rounded-full font-medium border-none shadow-none">
+                                              Tác giả
+                                            </Badge>
+                                          )}
+                                        </div>
+                                        <div className="flex items-center gap-1 shrink-0">
+                                          <span className="text-[10px] text-on-surface-variant">
+                                            {formatTimeAgo(reply.createdAt)}
+                                          </span>
+                                          {user && (user.uid === reply.userId || user.role === "admin") && (
+                                            <DropdownMenu>
+                                              <DropdownMenuTrigger asChild>
+                                                <button
+                                                  type="button"
+                                                  className="p-0.5 rounded-full text-on-surface-variant/70 hover:text-on-surface hover:bg-neutral-200/60 transition-colors cursor-pointer outline-none shrink-0 flex items-center justify-center"
+                                                  title="Tùy chọn câu trả lời"
+                                                >
+                                                  <span className="material-symbols-outlined text-[16px] leading-none">
+                                                    more_horiz
+                                                  </span>
+                                                </button>
+                                              </DropdownMenuTrigger>
+                                              <DropdownMenuContent align="end" className="w-36 bg-white border border-neutral-200 shadow-md rounded-xl p-1">
+                                                {user.uid === reply.userId && (
+                                                  <DropdownMenuItem
+                                                    onClick={() => handleStartEdit(reply)}
+                                                    className="flex items-center gap-2 text-xs font-medium text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 rounded-lg px-2.5 py-1.5 cursor-pointer"
+                                                  >
+                                                    <span className="material-symbols-outlined text-[15px]">edit</span>
+                                                    <span>Chỉnh sửa</span>
+                                                  </DropdownMenuItem>
+                                                )}
+                                                <DropdownMenuItem
+                                                  onClick={() => handleDeleteComment(reply.id, cmt.id, true)}
+                                                  className="flex items-center gap-2 text-xs font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 rounded-lg px-2.5 py-1.5 cursor-pointer"
+                                                >
+                                                  <span className="material-symbols-outlined text-[15px]">delete</span>
+                                                  <span>Xóa</span>
+                                                </DropdownMenuItem>
+                                              </DropdownMenuContent>
+                                            </DropdownMenu>
+                                          )}
+                                        </div>
+                                      </div>
+
+                                      {/* Content or Inline Edit Box for Reply */}
+                                      {editingCommentId === reply.id ? (
+                                        <div className="flex flex-col gap-2 mt-1.5">
+                                          <input
+                                            type="text"
+                                            autoFocus
+                                            value={editingContent}
+                                            onChange={(e) => setEditingContent(e.target.value)}
+                                            onKeyDown={(e) => {
+                                              if (e.key === "Enter") handleSaveEdit(reply.id, cmt.id)
+                                              if (e.key === "Escape") handleCancelEdit()
+                                            }}
+                                            className="w-full text-xs bg-surface-container-low border border-primary/50 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20 text-on-surface shadow-xs"
+                                            placeholder="Chỉnh sửa câu trả lời của bạn..."
+                                          />
+                                          <div className="flex items-center gap-2 justify-end">
+                                            <button
+                                              type="button"
+                                              onClick={handleCancelEdit}
+                                              className="text-[11px] font-semibold text-on-surface-variant hover:text-on-surface px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+                                            >
+                                              Hủy
+                                            </button>
+                                            <Button
+                                              size="sm"
+                                              onClick={() => handleSaveEdit(reply.id, cmt.id)}
+                                              className="h-7 text-[11px] px-3 rounded-lg bg-primary text-on-primary hover:bg-primary-container font-semibold cursor-pointer"
+                                            >
+                                              Lưu thay đổi
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <p className="text-xs text-on-surface leading-relaxed mt-0.5 whitespace-pre-wrap">
+                                          {reply.content}
+                                        </p>
+                                      )}
+
+                                      {/* Action Row for Reply */}
+                                      <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                                        {/* Like Icon Button */}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleToggleLikeComment(reply.id, cmt.id)}
+                                          className={`inline-flex items-center justify-center transition-transform active:scale-90 cursor-pointer p-0.5 ${
+                                            isReplyLikedByMe
+                                              ? "text-blue-600 font-bold"
+                                              : "text-on-surface-variant hover:text-blue-600"
+                                          }`}
+                                          title={isReplyLikedByMe ? "Bỏ thích" : "Thích"}
+                                        >
+                                          <span
+                                            className="material-symbols-outlined text-[15px]"
+                                            style={isReplyLikedByMe ? { fontVariationSettings: "'FILL' 1" } : {}}
+                                          >
+                                            thumb_up
+                                          </span>
+                                        </button>
+
+                                        {/* Reply Button (mentions reply author) */}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleStartReply(cmt.id, reply.authorName, reply.userId)}
+                                          className="text-[11px] font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+                                        >
+                                          Trả lời
+                                        </button>
+
+                                        {/* Edited status */}
+                                        {reply.isEdited && (
+                                          <span className="text-[10px] text-on-surface-variant/70 italic select-none">
+                                            Đã chỉnh sửa
+                                          </span>
+                                        )}
+
+                                        {/* Round Blue Like Badge */}
+                                        {reply.likesCount > 0 && (
+                                          <span className="inline-flex items-center gap-1.5 select-none">
+                                            <span className="w-3.5 h-3.5 rounded-full bg-[#1877F2] text-white flex items-center justify-center shadow-xs shrink-0">
+                                              <svg className="w-2 h-2 fill-white" viewBox="0 0 24 24">
+                                                <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
+                                              </svg>
+                                            </span>
+                                            <span className="text-[11px] font-semibold text-slate-700">{reply.likesCount}</span>
+                                          </span>
                                         )}
                                       </div>
-                                      <p className="text-xs text-on-surface leading-relaxed mt-0.5">
-                                        {reply.content}
-                                      </p>
                                     </div>
                                   </div>
                                 )
@@ -985,6 +1421,39 @@ export const PostCard: React.FC<PostCardProps> = ({
           </div>,
           document.body
         )}
+
+      {/* Shadcn AlertDialog Xác nhận xóa bình luận */}
+      <AlertDialog
+        open={!!commentToDelete}
+        onOpenChange={(open) => {
+          if (!open) setCommentToDelete(null)
+        }}
+      >
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-rose-600">
+              <span className="material-symbols-outlined text-2xl">warning</span>
+              Xác nhận xóa {commentToDelete?.isReply ? "câu trả lời" : "bình luận"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {commentToDelete?.isReply
+                ? "Bạn có chắc chắn muốn xóa câu trả lời này không? Hành động này không thể hoàn tác."
+                : "Bạn có chắc chắn muốn xóa bình luận này không? Tất cả các câu trả lời liên quan cũng sẽ bị xóa và hành động này không thể hoàn tác."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setCommentToDelete(null)}>
+              Hủy bỏ
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDeleteComment}
+              className="bg-rose-600 hover:bg-rose-700 text-white"
+            >
+              Xác nhận xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

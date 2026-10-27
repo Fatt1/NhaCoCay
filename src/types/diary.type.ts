@@ -38,6 +38,9 @@ export interface PostComment {
   authorName: string
   content: string
   likesCount: number
+  likedUserIds?: string[] // Danh sách user ID đã like comment này
+  isEdited?: boolean // true nếu comment đã được chỉnh sửa
+  updatedAt?: string // Thời điểm chỉnh sửa gần nhất
   parentId?: string | null // null nếu là comment gốc, chứa ID của comment cha nếu là trả lời
   replyToAuthorName?: string // Tên người được trả lời (ví dụ: "Nguyễn An")
   replyToUserId?: string // User ID của người được trả lời
@@ -45,3 +48,4 @@ export interface PostComment {
   replies?: PostComment[] // Danh sách các câu trả lời con (dùng khi render trên giao diện)
   createdAt: string
 }
+
