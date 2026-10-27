@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { navigateTo } from "@/lib/navigation"
 
 interface ProductDetailPageProps {
   productId: string
@@ -16,6 +17,8 @@ interface ProductDetailPageProps {
   onNotify?: (message: string, icon?: string) => void
   onOpenCart?: () => void
   onGoToCommunity?: () => void
+  onGoToKits?: () => void
+  onGoToCheckout?: () => void
 }
 
 const getInitial = (name: string): string => {
@@ -63,6 +66,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onSelectProduct,
   onNotify,
   onGoToCommunity,
+  onGoToKits,
+  onGoToCheckout,
 }) => {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
@@ -163,7 +168,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       imageUrl: product.coverImage,
       quantity: finalQty,
     })
-    window.location.hash = "#/checkout"
+    if (onGoToCheckout) {
+      onGoToCheckout()
+    } else {
+      navigateTo("/checkout")
+    }
   }
 
   if (loading) {
@@ -542,7 +551,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </div>
             <button
               type="button"
-              onClick={onBack}
+              onClick={onGoToKits || onBack}
               className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-semibold transition-colors cursor-pointer shrink-0"
             >
               <span>Xem tất cả bộ kit</span>

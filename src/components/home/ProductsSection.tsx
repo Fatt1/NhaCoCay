@@ -10,12 +10,14 @@ interface ProductsSectionProps {
   searchKeyword?: string
   onNotify?: (message: string, icon?: string) => void
   onSelectProduct?: (product: Product) => void
+  onExploreKits?: () => void
 }
 
 export const ProductsSection: React.FC<ProductsSectionProps> = ({
   searchKeyword = "",
   onNotify,
   onSelectProduct,
+  onExploreKits,
 }) => {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -79,8 +81,14 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
           </div>
 
           <a
-            href="#shop-section"
-            className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-semibold transition-colors shrink-0"
+            href="/kits"
+            onClick={(e) => {
+              if (onExploreKits) {
+                e.preventDefault()
+                onExploreKits()
+              }
+            }}
+            className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-semibold transition-colors shrink-0 cursor-pointer"
           >
             <span>Xem tất cả bộ kit</span>
             <span className="material-symbols-outlined text-[16px]">chevron_right</span>

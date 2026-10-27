@@ -4,6 +4,7 @@ import { useAuthStore, useCartStore } from "@/stores"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { navigateTo } from "@/lib/navigation"
 
 interface HeaderProps {
   activeTab?: "home" | "kits" | "forum" | "journal" | "about"
@@ -80,8 +81,11 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Logo */}
         <div
           onClick={() => {
-            onNavigateTab?.("home")
-            window.location.hash = "#/"
+            if (onNavigateTab) {
+              onNavigateTab("home")
+            } else {
+              navigateTo("/")
+            }
             window.scrollTo({ top: 0, behavior: "smooth" })
           }}
           className="flex items-center gap-2.5 cursor-pointer shrink-0 group select-none"
@@ -137,8 +141,11 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
           <button
             onClick={() => {
-              onNavigateTab?.("about")
-              window.location.hash = "#/about"
+              if (onNavigateTab) {
+                onNavigateTab("about")
+              } else {
+                navigateTo("/about")
+              }
               window.scrollTo({ top: 0, behavior: "smooth" })
             }}
             className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${activeTab === "about"
@@ -218,7 +225,7 @@ export const Header: React.FC<HeaderProps> = ({
                         if (onNavigateOrders) {
                           onNavigateOrders()
                         } else {
-                          window.location.hash = "#/orders"
+                          navigateTo("/orders")
                         }
                       }}
                       className="w-full px-4 py-2.5 flex items-center gap-2.5 text-xs text-on-surface hover:text-primary hover:bg-primary/5 transition-colors cursor-pointer"
@@ -237,7 +244,7 @@ export const Header: React.FC<HeaderProps> = ({
                           if (onNavigateAdmin) {
                             onNavigateAdmin()
                           } else {
-                            window.location.hash = "#/admin"
+                            navigateTo("/admin")
                           }
                         }}
                         className="w-full px-4 py-2.5 flex items-center gap-2.5 text-xs text-on-surface hover:text-[#193a2c] hover:bg-emerald-50 transition-colors cursor-pointer"

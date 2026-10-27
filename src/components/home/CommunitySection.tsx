@@ -5,6 +5,7 @@ import { PostCard } from "@/components/common"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { navigateTo } from "@/lib/navigation"
 
 interface CommunitySectionProps {
   onOpenNewPost?: () => void
@@ -30,7 +31,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
     if (onGoToForum) {
       onGoToForum()
     } else {
-      window.location.hash = "#/forum"
+      navigateTo("/forum")
     }
     window.scrollTo({ top: 0, behavior: "smooth" })
   }

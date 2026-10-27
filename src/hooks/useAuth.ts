@@ -8,8 +8,18 @@ export const useAuth = () => {
   useEffect(() => {
     setStatus("loading")
     const unsubscribe = subscribeToAuthChanges((firebaseUser) => {
-      setUser(firebaseUser)
-      setStatus(firebaseUser ? "authenticated" : "unauthenticated")
+      if (firebaseUser) {
+        setUser(firebaseUser)
+        setStatus("authenticated")
+      } else {
+        const stored = localStorage.getItem("nhacocay_current_user")
+        if (!stored) {
+          setUser(null)
+          setStatus("unauthenticated")
+        } else {
+          setStatus("authenticated")
+        }
+      }
     })
 
     return () => unsubscribe()

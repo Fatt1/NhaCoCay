@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react"
+import { navigateTo } from "@/lib/navigation"
 
 interface AboutPageProps {
   onNavigateTab?: (tab: "home" | "kits" | "forum" | "journal" | "about") => void
@@ -86,7 +87,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
     if (onNavigateTab) {
       onNavigateTab("home")
     } else {
-      window.location.hash = "#/"
+      navigateTo("/")
     }
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
@@ -97,7 +98,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
     } else if (onNavigateTab) {
       onNavigateTab("kits")
     } else {
-      window.location.hash = "#/kits"
+      navigateTo("/kits")
     }
     window.scrollTo({ top: 0, behavior: "smooth" })
   }

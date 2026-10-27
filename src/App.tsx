@@ -17,6 +17,7 @@ import { ToastContainer, type ToastMessage } from "@/components/common"
 import { useAuthStore } from "@/stores"
 import { AuthModal } from "@/components/auth/AuthModal"
 import type { DiaryPost } from "@/types"
+import { navigateTo, getNormalizedPath } from "@/lib/navigation"
 
 type AppView =
   | "home"
@@ -47,11 +48,21 @@ function App() {
   const refreshPosts = () => setPostsVersion((v) => v + 1)
 
   const handleOpenNewPost = () => {
+    if (!user) {
+      addToast("Vui lòng đăng nhập để đăng bài viết!", "lock")
+      setIsAuthModalOpen(true)
+      return
+    }
     setPostToEdit(null)
     setIsPostModalOpen(true)
   }
 
   const handleEditPost = (post: DiaryPost) => {
+    if (!user) {
+      addToast("Vui lòng đăng nhập để chỉnh sửa bài viết!", "lock")
+      setIsAuthModalOpen(true)
+      return
+    }
     setPostToEdit(post)
     setIsPostModalOpen(true)
   }
@@ -61,49 +72,49 @@ function App() {
     setPostToEdit(null)
   }
 
-  // Sync with URL hash
+  // Sync with URL path (HTML5 pushState / popstate + legacy hash normalization)
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash
-      if (hash.startsWith("#/product/")) {
-        const id = hash.replace("#/product/", "")
+    const handleLocationChange = () => {
+      const path = getNormalizedPath()
+      if (path.startsWith("/product/")) {
+        const id = path.replace("/product/", "")
         if (id) {
           setSelectedProductId(id)
           setCurrentView("product-detail")
         }
-      } else if (hash.startsWith("#/journal/")) {
-        const id = hash.replace("#/journal/", "")
+      } else if (path.startsWith("/journal/")) {
+        const id = path.replace("/journal/", "")
         if (id) {
           setSelectedDiaryId(id)
           setCurrentView("journal-detail")
         }
-      } else if (hash.startsWith("#/order-success/")) {
-        const id = hash.replace("#/order-success/", "")
+      } else if (path.startsWith("/order-success/")) {
+        const id = path.replace("/order-success/", "")
         if (id) {
           setSelectedOrderId(id)
           setCurrentView("order-success")
         }
-      } else if (hash === "#/checkout") {
+      } else if (path === "/checkout") {
         setCurrentView("checkout")
-      } else if (hash === "#/orders") {
+      } else if (path === "/orders") {
         setCurrentView("orders")
-      } else if (hash === "#/admin" || hash.startsWith("#/admin/")) {
+      } else if (path === "/admin" || path.startsWith("/admin/")) {
         setCurrentView("admin")
-      } else if (hash === "#/journal") {
+      } else if (path === "/journal") {
         setSelectedDiaryId(null)
         setCurrentView("journal")
-      } else if (hash === "#/kits") {
+      } else if (path === "/kits") {
         setSelectedProductId(null)
         setCurrentView("kits")
-      } else if (hash === "#/forum") {
+      } else if (path === "/forum") {
         setSelectedProductId(null)
         setCurrentView("forum")
-      } else if (hash === "#/about") {
+      } else if (path === "/about") {
         setSelectedProductId(null)
         setSelectedDiaryId(null)
         setSelectedOrderId(null)
         setCurrentView("about")
-      } else if (hash === "" || hash === "#" || hash === "#/") {
+      } else if (path === "" || path === "/") {
         setSelectedProductId(null)
         setSelectedDiaryId(null)
         setSelectedOrderId(null)
@@ -111,9 +122,36 @@ function App() {
       }
     }
 
-    handleHashChange()
-    window.addEventListener("hashchange", handleHashChange)
-    return () => window.removeEventListener("hashchange", handleHashChange)
+    handleLocationChange()
+    window.addEventListener("popstate", handleLocationChange)
+    window.addEventListener("hashchange", handleLocationChange)
+
+    // Global interceptor for standard internal anchor tags `<a href="/...">`
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest("a")
+      if (!target) return
+      const href = target.getAttribute("href")
+      if (
+        href &&
+        href.startsWith("/") &&
+        !href.startsWith("//") &&
+        target.target !== "_blank" &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey
+      ) {
+        e.preventDefault()
+        navigateTo(href)
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
+    }
+    document.addEventListener("click", handleAnchorClick)
+
+    return () => {
+      window.removeEventListener("popstate", handleLocationChange)
+      window.removeEventListener("hashchange", handleLocationChange)
+      document.removeEventListener("click", handleAnchorClick)
+    }
   }, [])
 
   const addToast = (message: string, icon = "check_circle") => {
@@ -128,27 +166,27 @@ function App() {
   const handleSelectProduct = (product: { id: string }) => {
     setSelectedProductId(product.id)
     setCurrentView("product-detail")
-    window.location.hash = `#/product/${product.id}`
+    navigateTo(`/product/${product.id}`)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   const handleSelectDiary = (diaryId: string) => {
     setSelectedDiaryId(diaryId)
     setCurrentView("journal-detail")
-    window.location.hash = `#/journal/${diaryId}`
+    navigateTo(`/journal/${diaryId}`)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   const handleGoToCheckout = () => {
     setCurrentView("checkout")
-    window.location.hash = "#/checkout"
+    navigateTo("/checkout")
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   const handleOrderSuccess = (orderId: string) => {
     setSelectedOrderId(orderId)
     setCurrentView("order-success")
-    window.location.hash = `#/order-success/${orderId}`
+    navigateTo(`/order-success/${orderId}`)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
@@ -157,7 +195,7 @@ function App() {
     setSelectedDiaryId(null)
     setSelectedOrderId(null)
     setCurrentView("orders")
-    window.location.hash = "#/orders"
+    navigateTo("/orders")
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
@@ -171,7 +209,7 @@ function App() {
     setSelectedDiaryId(null)
     setSelectedOrderId(null)
     setCurrentView("admin")
-    window.location.hash = "#/admin"
+    navigateTo("/admin")
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
@@ -181,35 +219,35 @@ function App() {
       setSelectedDiaryId(null)
       setSelectedOrderId(null)
       setCurrentView("kits")
-      window.location.hash = "#/kits"
+      navigateTo("/kits")
       window.scrollTo({ top: 0, behavior: "smooth" })
     } else if (tab === "forum") {
       setSelectedProductId(null)
       setSelectedDiaryId(null)
       setSelectedOrderId(null)
       setCurrentView("forum")
-      window.location.hash = "#/forum"
+      navigateTo("/forum")
       window.scrollTo({ top: 0, behavior: "smooth" })
     } else if (tab === "journal") {
       setSelectedProductId(null)
       setSelectedDiaryId(null)
       setSelectedOrderId(null)
       setCurrentView("journal")
-      window.location.hash = "#/journal"
+      navigateTo("/journal")
       window.scrollTo({ top: 0, behavior: "smooth" })
     } else if (tab === "about") {
       setSelectedProductId(null)
       setSelectedDiaryId(null)
       setSelectedOrderId(null)
       setCurrentView("about")
-      window.location.hash = "#/about"
+      navigateTo("/about")
       window.scrollTo({ top: 0, behavior: "smooth" })
     } else if (tab === "home") {
       setSelectedProductId(null)
       setSelectedDiaryId(null)
       setSelectedOrderId(null)
       setCurrentView("home")
-      window.location.hash = "#/"
+      navigateTo("/")
       window.scrollTo({ top: 0, behavior: "smooth" })
     }
   }
@@ -230,7 +268,7 @@ function App() {
       setSelectedDiaryId(null)
       setSelectedOrderId(null)
       setCurrentView("kits")
-      window.location.hash = "#/kits"
+      navigateTo("/kits")
       window.scrollTo({ top: 0, behavior: "smooth" })
     }
   }
@@ -241,7 +279,7 @@ function App() {
       setSelectedDiaryId(null)
       setSelectedOrderId(null)
       setCurrentView("home")
-      window.location.hash = "#/"
+      navigateTo("/")
       setTimeout(() => {
         const el = document.getElementById(sectionId)
         if (el) el.scrollIntoView({ behavior: "smooth" })
@@ -349,6 +387,8 @@ function App() {
           onSelectProduct={handleSelectProduct}
           onNotify={addToast}
           onGoToCommunity={() => handleNavigateTab("forum")}
+          onGoToKits={() => handleNavigateTab("kits")}
+          onGoToCheckout={handleGoToCheckout}
         />
       ) : currentView === "checkout" ? (
         <CheckoutPage
@@ -417,6 +457,7 @@ function App() {
           postsVersion={postsVersion}
           onGoToJournals={() => handleNavigateTab("journal")}
           onGoToForum={() => handleNavigateTab("forum")}
+          onGoToKits={() => handleNavigateTab("kits")}
         />
       )}
     </MainLayout>

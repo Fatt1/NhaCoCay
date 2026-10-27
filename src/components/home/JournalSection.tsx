@@ -3,6 +3,7 @@ import { useAuthStore } from "@/stores"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { navigateTo } from "@/lib/navigation"
 
 import type { DiaryPost } from "@/types"
 
@@ -32,7 +33,7 @@ export const JournalSection: React.FC<JournalSectionProps> = ({
     if (onGoToJournals) {
       onGoToJournals()
     } else {
-      window.location.hash = "#/journal"
+      navigateTo("/journal")
     }
     window.scrollTo({ top: 0, behavior: "smooth" })
   }

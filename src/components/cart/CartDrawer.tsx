@@ -3,6 +3,7 @@ import { useCartStore, useAuthStore } from "@/stores"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { navigateTo } from "@/lib/navigation"
 
 interface CartDrawerProps {
   onNotify?: (message: string, icon?: string) => void
@@ -43,7 +44,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     if (onGoToCheckout) {
       onGoToCheckout()
     } else {
-      window.location.hash = "#/checkout"
+      navigateTo("/checkout")
     }
   }
 

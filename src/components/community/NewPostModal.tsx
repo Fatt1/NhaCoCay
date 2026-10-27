@@ -122,6 +122,10 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
 
   // Handle uploading files directly to Supabase Storage
   const handleFilesSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!user) {
+      alert("Vui lòng đăng nhập để tải ảnh lên!")
+      return
+    }
     const files = e.target.files
     if (!files || files.length === 0) return
 
@@ -136,7 +140,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
     try {
       setIsUploading(true)
       const uploadPromises = filesToProcess.map(async (file) => {
-        const publicUrl = await uploadPostImage(file, user?.uid || "community")
+        const publicUrl = await uploadPostImage(file, user.uid)
         const sizeInMB = (file.size / (1024 * 1024)).toFixed(1) + " MB"
         let shortName = file.name
         if (shortName.length > 18) {
@@ -190,6 +194,12 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
   // Handle Submit (Create or Update)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!user) {
+      alert("Vui lòng đăng nhập để đăng bài viết!")
+      onClose()
+      return
+    }
+
     const contentHtml = editor?.getHTML() || ""
     const contentText = editor?.getText() || ""
 
@@ -222,8 +232,8 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
         // Tạo mới bài viết
         await createPost({
           diaryId: "general_community",
-          userId: user?.uid || "guest_user",
-          authorName: user?.fullName || "Người gieo mầm",
+          userId: user.uid,
+          authorName: user.fullName || user.email?.split("@")[0] || "Người gieo mầm",
           title,
           content: contentHtml,
           coverImage: cover,

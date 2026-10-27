@@ -131,8 +131,10 @@ export const ForumPage: React.FC<ForumPageProps> = ({
             onClick={handleQuickPostClick}
             className="px-4 py-2 rounded-full bg-[#1b4332] hover:bg-[#112d20] text-white text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0 h-auto"
           >
-            <span className="material-symbols-outlined text-[15px]">add_circle</span>
-            <span>Viết Bài Thảo Luận</span>
+            <span className="material-symbols-outlined text-[15px]">
+              {user ? "add_circle" : "lock"}
+            </span>
+            <span>{user ? "Viết Bài Thảo Luận" : "Đăng Nhập Để Viết Bài"}</span>
           </Button>
         </div>
 
@@ -141,7 +143,11 @@ export const ForumPage: React.FC<ForumPageProps> = ({
           <div className="flex items-center gap-3">
             <Avatar className="size-10 shrink-0">
               <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">
-                {getInitial(user?.fullName || "Bạn")}
+                {user ? (
+                  getInitial(user.fullName || "Bạn")
+                ) : (
+                  <span className="material-symbols-outlined text-[18px]">person</span>
+                )}
               </AvatarFallback>
             </Avatar>
 
@@ -150,7 +156,9 @@ export const ForumPage: React.FC<ForumPageProps> = ({
               onClick={handleQuickPostClick}
               className="flex-1 bg-surface-container-low hover:bg-surface-container text-left px-5 py-3 rounded-full text-xs sm:text-sm text-outline hover:text-on-surface-variant transition-colors cursor-pointer border border-outline-variant/20 truncate"
             >
-              Bạn đang trồng cây gì hôm nay? Chia sẻ khoảnh khắc với cộng đồng...
+              {user
+                ? "Bạn đang trồng cây gì hôm nay? Chia sẻ khoảnh khắc với cộng đồng..."
+                : "Vui lòng đăng nhập để chia sẻ góc xanh & kinh nghiệm chăm cây..."}
             </button>
           </div>
 
@@ -169,8 +177,10 @@ export const ForumPage: React.FC<ForumPageProps> = ({
               onClick={handleQuickPostClick}
               className="rounded-full bg-[#1b4332] hover:bg-[#112d20] text-white text-xs font-semibold px-4 h-8 flex items-center gap-1.5 cursor-pointer shadow-none"
             >
-              <span className="material-symbols-outlined text-[16px]">send</span>
-              <span>Đăng Bài Mới</span>
+              <span className="material-symbols-outlined text-[16px]">
+                {user ? "send" : "lock"}
+              </span>
+              <span>{user ? "Đăng Bài Mới" : "Đăng Nhập"}</span>
             </Button>
           </div>
         </Card>
@@ -251,7 +261,7 @@ export const ForumPage: React.FC<ForumPageProps> = ({
                 onClick={handleQuickPostClick}
                 className="rounded-full bg-primary text-on-primary text-xs font-semibold px-6 py-2.5 h-auto cursor-pointer"
               >
-                + Viết bài ngay
+                {user ? "+ Viết bài ngay" : "Đăng nhập để viết bài"}
               </Button>
             </div>
           ) : (

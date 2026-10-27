@@ -6,17 +6,21 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  getPosts,
+  deletePost,
 } from "@/services"
-import type { Order, OrderStatus, Product } from "@/types"
+import type { Order, OrderStatus, Product, DiaryPost } from "@/types"
 import {
   AdminLayout,
   AdminDashboardPage,
   AdminOrdersPage,
   AdminProductsPage,
+  AdminPostsPage,
   type AdminTab,
 } from "./admin"
 import { ProductFormModal } from "@/components/admin/ProductFormModal"
 import { OrderDetailModal } from "@/components/admin/OrderDetailModal"
+import { navigateTo } from "@/lib/navigation"
 
 interface AdminPageProps {
   onBackToShop: () => void
@@ -32,33 +36,41 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [activeTab, setActiveTab] = useState<AdminTab>(() => {
     if (initialTab) return initialTab
     if (typeof window !== "undefined") {
-      const hash = window.location.hash
-      if (hash.includes("products")) return "products"
-      if (hash.includes("orders")) return "orders"
+      const path = window.location.pathname + window.location.hash
+      if (path.includes("products")) return "products"
+      if (path.includes("orders")) return "orders"
+      if (path.includes("posts")) return "posts"
       return "dashboard"
     }
     return "dashboard"
   })
 
-  // Sync hash with active tab
+  // Sync pathname with active tab
   useEffect(() => {
-    const handleHash = () => {
-      const hash = window.location.hash
-      if (hash.includes("products")) {
+    const handleLocationChange = () => {
+      const path = window.location.pathname + window.location.hash
+      if (path.includes("products")) {
         setActiveTab("products")
-      } else if (hash.includes("orders")) {
+      } else if (path.includes("orders")) {
         setActiveTab("orders")
-      } else if (hash.includes("dashboard") || hash === "#/admin" || hash === "#/admin/") {
+      } else if (path.includes("posts")) {
+        setActiveTab("posts")
+      } else if (path.includes("dashboard") || path === "/admin" || path === "/admin/" || path === "#/admin") {
         setActiveTab("dashboard")
       }
     }
-    window.addEventListener("hashchange", handleHash)
-    return () => window.removeEventListener("hashchange", handleHash)
+    window.addEventListener("popstate", handleLocationChange)
+    window.addEventListener("hashchange", handleLocationChange)
+    return () => {
+      window.removeEventListener("popstate", handleLocationChange)
+      window.removeEventListener("hashchange", handleLocationChange)
+    }
   }, [])
 
   const switchTab = (tab: AdminTab) => {
     setActiveTab(tab)
-    window.location.hash = `#/admin/${tab}`
+    const newPath = tab === "dashboard" ? "/admin" : `/admin/${tab}`
+    navigateTo(newPath)
   }
 
   // Orders State
@@ -79,6 +91,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
+
+  // Posts State
+  const [posts, setPosts] = useState<DiaryPost[]>([])
+  const [loadingPosts, setLoadingPosts] = useState(true)
+  const [postSearch, setPostSearch] = useState("")
+  const [postImageFilter, setPostImageFilter] = useState<"all" | "with_image" | "text_only">("all")
+  const [deletingPostId, setDeletingPostId] = useState<string | null>(null)
 
   // Load All Orders
   const loadOrders = async () => {
@@ -108,15 +127,30 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     }
   }
 
+  // Load All Posts
+  const loadPosts = async () => {
+    try {
+      setLoadingPosts(true)
+      const data = await getPosts()
+      setPosts(data)
+    } catch (err) {
+      console.error("Lỗi khi tải danh sách bài viết admin:", err)
+      onNotify?.("Không thể tải danh sách bài viết!", "error")
+    } finally {
+      setLoadingPosts(false)
+    }
+  }
+
   useEffect(() => {
     loadOrders()
     loadProducts()
+    loadPosts()
   }, [])
 
   const handleRefresh = async () => {
     try {
       setIsRefreshing(true)
-      await Promise.all([loadOrders(), loadProducts()])
+      await Promise.all([loadOrders(), loadProducts(), loadPosts()])
       onNotify?.("Dữ liệu quản trị đã được làm mới!", "check_circle")
     } finally {
       setIsRefreshing(false)
@@ -200,6 +234,21 @@ export const AdminPage: React.FC<AdminPageProps> = ({
     setIsProductModalOpen(false)
   }
 
+  // Handle Delete Post
+  const handleDeletePost = async (post: DiaryPost) => {
+    try {
+      setDeletingPostId(post.id)
+      await deletePost(post.id)
+      setPosts((prev) => prev.filter((p) => p.id !== post.id))
+      onNotify?.(`Đã xóa bài viết "${post.title}" thành công!`, "delete")
+    } catch (err) {
+      console.error("Lỗi khi xóa bài viết:", err)
+      onNotify?.("Có lỗi xảy ra khi xóa bài viết!", "error")
+    } finally {
+      setDeletingPostId(null)
+    }
+  }
+
   const pendingOrdersCount = orders.filter((o) => o.status === "pending").length
 
   return (
@@ -210,6 +259,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         ordersCount={orders.length}
         pendingOrdersCount={pendingOrdersCount}
         productsCount={products.length}
+        postsCount={posts.length}
         isRefreshing={isRefreshing}
         onRefresh={handleRefresh}
         onOpenAddProduct={handleOpenAddProduct}
@@ -219,6 +269,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           <AdminDashboardPage
             orders={orders}
             products={products}
+            postsCount={posts.length}
             loadingOrders={loadingOrders}
             onNavigateTab={switchTab}
             onOpenOrderDetail={handleOpenOrderDetail}
@@ -252,6 +303,19 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             onOpenAddProduct={handleOpenAddProduct}
             onOpenEditProduct={handleOpenEditProduct}
             onDeleteProduct={handleDeleteProduct}
+          />
+        )}
+
+        {activeTab === "posts" && (
+          <AdminPostsPage
+            posts={posts}
+            loadingPosts={loadingPosts}
+            postSearch={postSearch}
+            onPostSearchChange={setPostSearch}
+            postImageFilter={postImageFilter}
+            onPostImageFilterChange={setPostImageFilter}
+            deletingPostId={deletingPostId}
+            onDeletePost={handleDeletePost}
           />
         )}
       </AdminLayout>

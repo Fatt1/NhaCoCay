@@ -46,10 +46,10 @@ export const Footer: React.FC<FooterProps> = ({ onNotify }) => {
         <div className="space-y-3">
           <h4 className="text-sm uppercase tracking-wider font-bold text-on-surface">Khám Phá</h4>
           <ul className="space-y-2.5 text-sm text-on-surface-variant">
-            <li><a href="#/kits" className="hover:text-primary transition-colors">Bộ Kit Trồng Cây</a></li>
-            <li><a href="#/forum" className="hover:text-primary transition-colors">Diễn Đàn Nhà Có Cây</a></li>
-            <li><a href="#/journal" className="hover:text-primary transition-colors">Nhật Ký Cây</a></li>
-            <li><a href="#/about" className="hover:text-primary transition-colors">Về Chúng Tôi</a></li>
+            <li><a href="/kits" className="hover:text-primary transition-colors">Bộ Kit Trồng Cây</a></li>
+            <li><a href="/forum" className="hover:text-primary transition-colors">Diễn Đàn Nhà Có Cây</a></li>
+            <li><a href="/journal" className="hover:text-primary transition-colors">Nhật Ký Cây</a></li>
+            <li><a href="/about" className="hover:text-primary transition-colors">Về Chúng Tôi</a></li>
           </ul>
         </div>
 

@@ -140,7 +140,6 @@ export const JournalDetailPage: React.FC<JournalDetailPageProps> = ({
       setIsDeleting(true)
       await deleteDiary(diary.id)
       onNotify?.("Đã xóa nhật ký trồng cây!", "delete")
-      window.location.hash = "#/journal"
       onBack()
     } catch (err) {
       console.error(err)

@@ -6,6 +6,7 @@ import {
   Plus,
   RotateCw,
   Store,
+  MessageSquareText,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -30,7 +31,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 
-export type AdminTab = "dashboard" | "orders" | "products"
+export type AdminTab = "dashboard" | "orders" | "products" | "posts"
 
 interface AdminLayoutProps {
   activeTab: AdminTab
@@ -38,6 +39,7 @@ interface AdminLayoutProps {
   ordersCount: number
   pendingOrdersCount: number
   productsCount: number
+  postsCount: number
   isRefreshing: boolean
   onRefresh: () => Promise<void>
   onOpenAddProduct: () => void
@@ -51,6 +53,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   ordersCount,
   pendingOrdersCount,
   productsCount,
+  postsCount,
   isRefreshing,
   onRefresh,
   onOpenAddProduct,
@@ -144,6 +147,26 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                       {productsCount}
                     </SidebarMenuBadge>
                   </SidebarMenuItem>
+
+                  {/* 4. Bài Viết Diễn Đàn */}
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={activeTab === "posts"}
+                      onClick={() => onSwitchTab("posts")}
+                      tooltip="Quản lý bài viết diễn đàn"
+                      className={`cursor-pointer rounded-xl transition-all ${
+                        activeTab === "posts"
+                          ? "bg-primary/10 text-primary font-bold shadow-2xs"
+                          : "hover:bg-muted text-sidebar-foreground font-medium"
+                      }`}
+                    >
+                      <MessageSquareText className="size-4" />
+                      <span>Bài Viết</span>
+                    </SidebarMenuButton>
+                    <SidebarMenuBadge className="bg-muted text-foreground border border-border font-semibold">
+                      {postsCount}
+                    </SidebarMenuBadge>
+                  </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -210,11 +233,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                   {activeTab === "dashboard" && "Dashboard Tổng Quan"}
                   {activeTab === "orders" && "Quản Lý Đơn Hàng"}
                   {activeTab === "products" && "Danh Sách Bộ Kit Trồng Cây"}
+                  {activeTab === "posts" && "Quản Lý Bài Viết Diễn Đàn"}
                 </h1>
                 <Badge variant="outline" className="text-[11px] font-medium text-muted-foreground border-border shrink-0 hidden sm:inline-flex">
                   {activeTab === "dashboard" && "Real-time Metrics"}
                   {activeTab === "orders" && `${ordersCount} Đơn hàng`}
                   {activeTab === "products" && `${productsCount} Bộ kit`}
+                  {activeTab === "posts" && `${postsCount} Bài viết`}
                 </Badge>
               </div>
             </div>

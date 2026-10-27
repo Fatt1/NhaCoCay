@@ -26,13 +26,16 @@ import {
   ArrowRight,
   AlertTriangle,
   Eye,
+  MessageSquareText,
 } from "lucide-react"
+import type { AdminTab } from "./AdminLayout"
 
 interface AdminDashboardPageProps {
   orders: Order[]
   products: Product[]
+  postsCount?: number
   loadingOrders: boolean
-  onNavigateTab: (tab: "dashboard" | "orders" | "products") => void
+  onNavigateTab: (tab: AdminTab) => void
   onOpenOrderDetail: (order: Order) => void
   onSetOrderStatusFilter: (filter: string) => void
 }
@@ -71,6 +74,7 @@ const ORDER_STATUS_CONFIG: Record<
 export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
   orders,
   products,
+  postsCount = 0,
   loadingOrders,
   onNavigateTab,
   onOpenOrderDetail,
@@ -124,8 +128,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
         </Card>
       )}
 
-      {/* 4 Elevated KPI Cards using Shadcn Card */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 5 Elevated KPI Cards using Shadcn Card */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {/* 1. Tổng Doanh Thu */}
         <Card className="rounded-2xl border-border bg-card shadow-xs hover:shadow-md transition-shadow">
           <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between">
@@ -222,6 +226,36 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
               ) : (
                 <span className="text-emerald-700 font-semibold">Tất cả sản phẩm còn hàng</span>
               )}
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* 5. Bài Viết Diễn Đàn */}
+        <Card className="rounded-2xl border-border bg-card shadow-xs hover:shadow-md transition-shadow">
+          <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between">
+            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              Bài Viết Diễn Đàn
+            </CardTitle>
+            <div className="size-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shadow-2xs">
+              <MessageSquareText className="size-4.5" />
+            </div>
+          </CardHeader>
+          <CardContent className="p-5 pt-1 flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <div className="text-2xl font-extrabold font-heading text-foreground">
+                {postsCount}
+              </div>
+              <button
+                type="button"
+                onClick={() => onNavigateTab("posts")}
+                className="text-[11px] font-bold text-teal-700 hover:underline cursor-pointer flex items-center gap-1"
+              >
+                <span>Quản lý</span>
+                <ArrowRight className="size-3" />
+              </button>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Chia sẻ từ cộng đồng
             </p>
           </CardContent>
         </Card>

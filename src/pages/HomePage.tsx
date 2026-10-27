@@ -19,6 +19,7 @@ interface HomePageProps {
   postsVersion?: number
   onGoToJournals?: () => void
   onGoToForum?: () => void
+  onGoToKits?: () => void
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -31,6 +32,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   postsVersion,
   onGoToJournals,
   onGoToForum,
+  onGoToKits,
 }) => {
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
@@ -43,7 +45,7 @@ export const HomePage: React.FC<HomePageProps> = ({
     <div className="flex flex-col w-full">
       {/* 1. Hero Section */}
       <HeroSection
-        onExploreKits={() => scrollToSection("shop-section")}
+        onExploreKits={onGoToKits || (() => scrollToSection("shop-section"))}
         onJoinForum={() => scrollToSection("community-section")}
         onNotify={onNotify}
       />
@@ -56,6 +58,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         searchKeyword={searchKeyword}
         onNotify={onNotify}
         onSelectProduct={onSelectProduct}
+        onExploreKits={onGoToKits}
       />
 
       {/* 4. Interactive Plant Journal Dashboard */}
