@@ -52,7 +52,7 @@ const getDisplayName = (user: { fullName?: string; email?: string } | null): str
 export const Header: React.FC<HeaderProps> = ({
   activeTab = "home",
   onNavigateTab,
-  onNavigateSection,
+  onNavigateSection: _onNavigateSection,
   onOpenAuthModal,
   onNotify,
   onNavigateOrders,
@@ -140,10 +140,15 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
           <button
             onClick={() => {
-              onNavigateTab?.("home")
-              onNavigateSection?.("about-section")
+              onNavigateTab?.("about")
+              window.location.hash = "#/about"
+              window.scrollTo({ top: 0, behavior: "smooth" })
             }}
-            className="px-3.5 py-1.5 rounded-full font-medium text-[14px] text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 transition-all cursor-pointer"
+            className={`px-3.5 py-1.5 font-semibold text-[14px] transition-all cursor-pointer ${
+              activeTab === "about"
+                ? "text-primary border-b-2 border-primary"
+                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 rounded-full"
+            }`}
           >
             Về Chúng Tôi
           </button>

@@ -10,6 +10,7 @@ import {
   CheckoutPage,
   OrderSuccessPage,
   OrdersHistoryPage,
+  AboutPage,
   AdminPage,
 } from "@/pages"
 import { ToastContainer, type ToastMessage } from "@/components/common"
@@ -26,6 +27,7 @@ type AppView =
   | "order-success"
   | "orders"
   | "admin"
+  | "about"
 
 function App() {
   const [currentView, setCurrentView] = useState<AppView>("home")
@@ -93,6 +95,11 @@ function App() {
       } else if (hash === "#/forum") {
         setSelectedProductId(null)
         setCurrentView("forum")
+      } else if (hash === "#/about") {
+        setSelectedProductId(null)
+        setSelectedDiaryId(null)
+        setSelectedOrderId(null)
+        setCurrentView("about")
       } else if (hash === "" || hash === "#" || hash === "#/") {
         setSelectedProductId(null)
         setSelectedDiaryId(null)
@@ -182,6 +189,13 @@ function App() {
       setCurrentView("journal")
       window.location.hash = "#/journal"
       window.scrollTo({ top: 0, behavior: "smooth" })
+    } else if (tab === "about") {
+      setSelectedProductId(null)
+      setSelectedDiaryId(null)
+      setSelectedOrderId(null)
+      setCurrentView("about")
+      window.location.hash = "#/about"
+      window.scrollTo({ top: 0, behavior: "smooth" })
     } else if (tab === "home") {
       setSelectedProductId(null)
       setSelectedDiaryId(null)
@@ -201,7 +215,8 @@ function App() {
       currentView === "journal-detail" ||
       currentView === "checkout" ||
       currentView === "order-success" ||
-      currentView === "orders"
+      currentView === "orders" ||
+      currentView === "about"
     ) {
       setSelectedProductId(null)
       setSelectedDiaryId(null)
@@ -330,6 +345,11 @@ function App() {
           onOpenAuthModal={() => setIsAuthModalOpen(true)}
           postsVersion={postsVersion}
           onRefreshPosts={refreshPosts}
+        />
+      ) : currentView === "about" ? (
+        <AboutPage
+          onNavigateTab={handleNavigateTab}
+          onExploreKits={() => handleNavigateTab("kits")}
         />
       ) : (
         <HomePage
