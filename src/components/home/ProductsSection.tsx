@@ -70,7 +70,7 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
             <span className="text-xs text-primary uppercase tracking-wider font-semibold block">
               CỬA HÀNG XANH
             </span>
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-on-surface tracking-tight">
+            <h2 className="font-heading text-2xl sm:text-2xl font-bold text-on-surface tracking-tight">
               Bộ Kit Trồng Cây Yêu Thích
             </h2>
             <p className="font-body text-sm text-on-surface-variant">

@@ -5,7 +5,6 @@ import {
   ProductsSection,
   JournalSection,
   CommunitySection,
-  TestimonialsSection,
 } from "@/components/home"
 
 import type { Product, DiaryPost } from "@/types"

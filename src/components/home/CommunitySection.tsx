@@ -75,7 +75,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
             <span className="text-xs text-primary uppercase tracking-wider font-semibold block">
               Cộng Đồng Xanh
             </span>
-            <h2 className="font-heading text-3xl sm:text-4xl text-on-surface font-bold tracking-tight">
+            <h2 className="font-heading text-2xl sm:text-2xl text-on-surface font-bold tracking-tight">
               Diễn Đàn Trồng Cây
             </h2>
             <p className="font-body text-sm text-on-surface-variant">

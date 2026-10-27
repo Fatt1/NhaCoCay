@@ -129,9 +129,9 @@ export const PlantKitsPage: React.FC<PlantKitsPageProps> = ({
           </div>
 
           <div className="flex flex-col gap-2 max-w-2xl z-10">
-            <h1 className="font-heading text-3xl sm:text-4xl font-bold text-on-surface tracking-tight flex items-center gap-2">
+            <h1 className="font-heading text-2xl sm:text-2xl font-bold text-on-surface tracking-tight flex items-center gap-2">
               <span>Bộ Kit Trồng Cây Trọn Gói</span>
-              <span className="text-primary text-3xl">🌱</span>
+              <span className="text-primary text-2xl">🌱</span>
             </h1>
             <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
               Tất cả những gì bạn cần để bắt đầu một góc xanh bình yên tại nhà — từ hạt giống, viên nén sơ dừa đến chậu giấy và hướng dẫn chăm sóc cây.

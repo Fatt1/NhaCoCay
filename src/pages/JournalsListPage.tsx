@@ -87,7 +87,7 @@ export const JournalsListPage: React.FC<JournalsListPageProps> = ({
             <span className="w-2 h-2 rounded-full bg-primary" />
             <span>HÀNH TRÌNH MẦM XANH</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold font-heading text-on-surface tracking-tight">
+          <h1 className="text-2xl sm:text-2xl font-bold font-heading text-on-surface tracking-tight">
             Sổ Tay Nhật Ký Trồng Cây
           </h1>
           <p className="text-sm text-on-surface-variant max-w-2xl">

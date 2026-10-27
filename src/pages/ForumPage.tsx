@@ -115,10 +115,10 @@ export const ForumPage: React.FC<ForumPageProps> = ({
           <div className="flex flex-col gap-2 max-w-2xl">
             <div className="inline-block self-start">
               <span className="px-3.5 py-1 rounded-full bg-[#1b4332]/10 text-primary text-[11px] font-bold uppercase tracking-wider">
-                🌱 CỘNG ĐỒNG NHÀ CÓ CÂY • HƠN 35.000 NÔNG DÂN ĐÔ THỊ
+                🌱 CỘNG ĐỒNG NHÀ CÓ CÂY
               </span>
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-bold text-on-surface tracking-tight leading-tight">
+            <h1 className="font-heading text-2xl sm:text-2xl font-bold text-on-surface tracking-tight leading-tight">
               Cộng Đồng Gieo Mầm &amp; Chia Sẻ Góc Xanh
             </h1>
             <p className="font-body text-sm text-on-surface-variant leading-relaxed">
@@ -129,9 +129,9 @@ export const ForumPage: React.FC<ForumPageProps> = ({
 
           <Button
             onClick={handleQuickPostClick}
-            className="px-6 py-3.5 rounded-full bg-[#1b4332] hover:bg-[#112d20] text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0 h-auto"
+            className="px-4 py-2 rounded-full bg-[#1b4332] hover:bg-[#112d20] text-white text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0 h-auto"
           >
-            <span className="material-symbols-outlined text-[20px]">add_circle</span>
+            <span className="material-symbols-outlined text-[15px]">add_circle</span>
             <span>Viết Bài Thảo Luận</span>
           </Button>
         </div>
@@ -180,11 +180,10 @@ export const ForumPage: React.FC<ForumPageProps> = ({
           <button
             type="button"
             onClick={() => setActiveFeedTab("all")}
-            className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-              activeFeedTab === "all"
-                ? "bg-[#183d2c] text-white shadow-sm"
-                : "bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
-            }`}
+            className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${activeFeedTab === "all"
+              ? "bg-[#183d2c] text-white shadow-sm"
+              : "bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+              }`}
           >
             Tất cả thảo luận ({posts.length})
           </button>
@@ -199,11 +198,10 @@ export const ForumPage: React.FC<ForumPageProps> = ({
               }
               setActiveFeedTab("my_posts")
             }}
-            className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeFeedTab === "my_posts"
-                ? "bg-[#183d2c] text-white shadow-sm"
-                : "bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
-            }`}
+            className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${activeFeedTab === "my_posts"
+              ? "bg-[#183d2c] text-white shadow-sm"
+              : "bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+              }`}
           >
             <span className="material-symbols-outlined text-[18px]">person</span>
             <span>Bài viết của tôi ({myPosts.length})</span>

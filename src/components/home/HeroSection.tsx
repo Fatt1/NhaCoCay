@@ -74,7 +74,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </span>
             </Badge>
 
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-[48px] font-bold text-on-surface tracking-tight leading-[1.15]">
+            <h1 className="font-heading text-2xl sm:text-2xl lg:text-[40px] font-bold text-on-surface tracking-tight leading-[1.15]">
               Gieo mầm bình yên, mở không gian xanh ngay tại nhà.
             </h1>
 
